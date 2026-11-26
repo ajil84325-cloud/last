@@ -2,10 +2,10 @@
 <html lang="id" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QurbanKu - Aplikasi Perencana & Tracker Tabungan Qurban</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>QurbanKu - Perencana & Tracker Tabungan Qurban Responsif</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans & Amiri -->
+    <!-- Google Fonts: Plus Jakarta Sans & Amiri (untuk sentuhan kaligrafi/Islami) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,16 +13,16 @@
       rel="stylesheet"
     />
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome Icons CDN -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- Chart.js untuk Grafik -->
+    <!-- Chart.js CDN untuk Grafik Perkembangan Tabungan -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Konfigurasi Tailwind Custom Colors & Fonts -->
@@ -65,79 +65,25 @@
     </script>
 
     <style>
-    /* Semua perangkat */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-}
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-/* Tablet */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-}
-
-/* HP */
-@media (max-width: 480px) {
-    .container {
-        width: 100%;
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-.container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-@media (max-width: 768px) {
-    .container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-}
-
+      /* Pola Geometri Islami Halus untuk Hero Section */
       .islamic-pattern {
         background-color: #064e3b;
         background-image:
           radial-gradient(#10b981 0.75px, transparent 0.75px),
           radial-gradient(#d97706 0.75px, #064e3b 0.75px);
-        background-size: 30px 30px;
-        background-position:
-          0 0,
-          15px 15px;
+        background-size: 24px 24px;
+        background-position: 0 0, 12px 12px;
       }
 
+      /* Touch Target Min-Height Safety */
+      button, a, input, select {
+        touch-action: manipulation;
+      }
+
+      /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-track {
         background: #f1f5f9;
@@ -150,10 +96,27 @@ img {
         background: #047857;
       }
 
+      /* Keyframe Toast Animation */
+      @keyframes slideInRight {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .toast-enter {
+        animation: slideInRight 0.25s ease-out forwards;
+      }
+
+      /* Print Optimizations */
       @media print {
         body {
           background: white !important;
           color: black !important;
+          font-size: 12pt;
         }
         .no-print {
           display: none !important;
@@ -161,64 +124,62 @@ img {
         .print-only {
           display: block !important;
         }
-        .shadow-lg,
-        .shadow-md,
-        .shadow-xl {
+        .shadow-lg, .shadow-md, .shadow-xl, .shadow-2xl {
           box-shadow: none !important;
-          border: 1px solid #e2e8f0 !important;
+          border: 1px solid #cbd5e1 !important;
         }
-        header,
-        footer,
-        nav {
+        header, footer, nav {
           display: none !important;
+        }
+        section {
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
       }
     </style>
   </head>
-  <body
-    class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white pb-24 md:pb-12"
-  >
-    <!-- ==================== NOTIFIKASI TOAST & MODAL KUSTOM ==================== -->
+  <body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white min-h-screen flex flex-col">
+
+    <!-- ==================== TOAST NOTIFIKASI CONTAINER ==================== -->
     <div
       id="toast-container"
-      class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"
+      class="fixed top-4 left-4 right-4 sm:left-auto sm:right-5 z-50 flex flex-col gap-2 pointer-events-none sm:max-w-md w-auto"
     ></div>
 
-    <!-- Modal Konfirmasi Kustom -->
+    <!-- ==================== MODAL KONFIRMASI KUSTOM ==================== -->
     <div
       id="confirm-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 no-print"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 no-print overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
     >
       <div
-        class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0"
+        class="bg-white rounded-3xl max-w-sm sm:max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0 my-auto"
         id="confirm-modal-box"
       >
         <div class="flex items-center gap-3 text-amber-600 mb-3">
-          <div
-            class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-lg"
-          >
+          <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-lg shrink-0">
             <i class="fa-solid fa-triangle-exclamation"></i>
           </div>
-          <h3 class="text-lg font-bold text-slate-800" id="confirm-title">
+          <h3 class="text-base sm:text-lg font-bold text-slate-800" id="confirm-title">
             Konfirmasi Tindakan
           </h3>
         </div>
-        <p
-          class="text-slate-600 text-sm mb-6 leading-relaxed"
-          id="confirm-message"
-        >
+        <p class="text-slate-600 text-xs sm:text-sm mb-6 leading-relaxed" id="confirm-message">
           Apakah Anda yakin ingin melanjutkan tindakan ini?
         </p>
-        <div class="flex justify-end gap-3">
+        <div class="flex items-center justify-end gap-2.5">
           <button
+            type="button"
             id="confirm-cancel-btn"
-            class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition"
+            class="min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition"
           >
             Batal
           </button>
           <button
+            type="button"
             id="confirm-ok-btn"
-            class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700 shadow-sm transition"
+            class="min-h-[44px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-sm transition"
           >
             Ya, Lanjutkan
           </button>
@@ -226,310 +187,308 @@ img {
       </div>
     </div>
 
-    <!-- ==================== HEADER / NAVBAR ==================== -->
-    <header
-      class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm no-print"
+    <!-- ==================== MODAL EDIT SETORAN ==================== -->
+    <div
+      id="edit-deposit-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 no-print overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
     >
+      <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 my-auto">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">Edit Setoran Tabungan</h3>
+          </div>
+          <button
+            type="button"
+            onclick="closeEditDepositModal()"
+            class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <form id="edit-deposit-form" class="space-y-4">
+          <input type="hidden" id="edit-deposit-id" />
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nominal Setoran (Rp)</label>
+            <input
+              type="number"
+              id="edit-deposit-amount"
+              min="1000"
+              step="1000"
+              required
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Setoran</label>
+            <input
+              type="date"
+              id="edit-deposit-date"
+              required
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Metode Setoran</label>
+            <select
+              id="edit-deposit-method"
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+            >
+              <option value="Transfer Bank (BSI)">Transfer Bank (BSI)</option>
+              <option value="E-Wallet / QRIS">E-Wallet / QRIS</option>
+              <option value="Setoran Tunai">Setoran Tunai</option>
+              <option value="Autodebet / Gajian">Autodebet / Gajian</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan</label>
+            <input
+              type="text"
+              id="edit-deposit-note"
+              placeholder="Contoh: Tabungan pekan ke-4"
+              class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          <div class="flex items-center justify-end gap-2.5 pt-2">
+            <button
+              type="button"
+              onclick="closeEditDepositModal()"
+              class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              class="min-h-[44px] px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm transition"
+            >
+              Simpan Perubahan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== HEADER / NAVBAR RESPONSIF ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm no-print">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
+          
+          <!-- Logo Brand -->
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-700 to-emerald-900 flex items-center justify-center text-gold-400 shadow-md"
-            >
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-700 to-emerald-900 flex items-center justify-center text-gold-400 shadow-md shrink-0">
               <i class="fa-solid fa-kaaba text-lg"></i>
             </div>
             <div>
-              <span
-                class="font-extrabold text-xl tracking-tight text-emerald-900"
-                >Qurban<span class="text-gold-600">Ku</span></span
-              >
-              <span
-                class="hidden sm:inline-block text-[11px] font-medium bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full ml-2 border border-emerald-200"
-                >1448 H / 2027</span
-              >
+              <span class="font-extrabold text-lg sm:text-xl tracking-tight text-emerald-900">
+                Qurban<span class="text-gold-600">Ku</span>
+              </span>
+              <span class="inline-block text-[10px] sm:text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full ml-1 sm:ml-2 border border-emerald-200">
+                1448 H / 2027
+              </span>
             </div>
           </div>
 
-          <nav
-            class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600"
-          >
-            <a href="#pilih-hewan" class="hover:text-emerald-700 transition"
-              >Target Hewan</a
-            >
-            <a
-              href="#tracker-tabungan"
-              class="hover:text-emerald-700 transition"
-              >Tracker & Grafik</a
-            >
-            <a href="#patungan-sapi" class="hover:text-emerald-700 transition"
-              >Patungan 1/7</a
-            >
-            <a href="#panduan-qurban" class="hover:text-emerald-700 transition"
-              >Panduan Qurban</a
-            >
+          <!-- Navigasi Desktop (Laptop & PC >= 768px) -->
+          <nav class="hidden md:flex items-center gap-5 text-sm font-semibold text-slate-600">
+            <a href="#pilih-hewan" class="hover:text-emerald-700 transition py-2">Target Hewan</a>
+            <a href="#tracker-tabungan" class="hover:text-emerald-700 transition py-2">Tracker & Grafik</a>
+            <a href="#patungan-sapi" class="hover:text-emerald-700 transition py-2">Patungan 1/7</a>
+            <a href="#panduan-qurban" class="hover:text-emerald-700 transition py-2">Panduan Qurban</a>
           </nav>
 
+          <!-- Aksi Header: Print + Reset + Mobile Hamburger Menu Toggle -->
           <div class="flex items-center gap-2">
             <button
+              type="button"
               onclick="exportReport()"
-              title="Cetak atau Simpan PDF Laporan"
-              class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-semibold border border-emerald-200 transition"
+              title="Cetak Laporan Tabungan"
+              class="min-h-[40px] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs sm:text-sm font-semibold border border-emerald-200 transition"
             >
               <i class="fa-solid fa-print text-emerald-600"></i>
               <span class="hidden sm:inline">Laporan</span>
             </button>
             <button
+              type="button"
               onclick="confirmResetDemo()"
               title="Reset Data Demo"
-              class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs sm:text-sm font-semibold border border-slate-200 hover:border-rose-200 transition"
+              class="min-h-[40px] flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs sm:text-sm font-semibold border border-slate-200 transition"
             >
               <i class="fa-solid fa-rotate-left"></i>
-              <span class="hidden lg:inline">Reset Demo</span>
+              <span class="hidden lg:inline">Reset</span>
+            </button>
+
+            <!-- Tombol Hamburger (Hanya di Layar HP < 768px) -->
+            <button
+              type="button"
+              id="mobile-menu-btn"
+              onclick="toggleMobileMenu()"
+              class="md:hidden min-h-[40px] w-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition focus:outline-none"
+              aria-label="Buka Menu"
+            >
+              <i class="fa-solid fa-bars text-lg" id="mobile-menu-icon"></i>
             </button>
           </div>
         </div>
       </div>
+
+      <!-- Mobile Navigation Drawer / Dropdown Menu (< 768px) -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2 shadow-lg"
+      >
+        <a
+          href="#pilih-hewan"
+          onclick="toggleMobileMenu()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition"
+        >
+          <i class="fa-solid fa-bullseye w-5 text-emerald-600"></i>
+          Target Hewan Qurban
+        </a>
+        <a
+          href="#tracker-tabungan"
+          onclick="toggleMobileMenu()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition"
+        >
+          <i class="fa-solid fa-chart-line w-5 text-emerald-600"></i>
+          Tracker & Grafik Setoran
+        </a>
+        <a
+          href="#patungan-sapi"
+          onclick="toggleMobileMenu()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition"
+        >
+          <i class="fa-solid fa-users-viewfinder w-5 text-emerald-600"></i>
+          Grup Patungan Sapi (1/7)
+        </a>
+        <a
+          href="#panduan-qurban"
+          onclick="toggleMobileMenu()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition"
+        >
+          <i class="fa-solid fa-book-open w-5 text-emerald-600"></i>
+          Panduan & Fiqih Qurban
+        </a>
+      </div>
     </header>
 
-    <!-- Bottom Navigation Bar untuk HP (Responsif) -->
-    <div
-      class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-2 flex justify-around items-center md:hidden no-print shadow-lg"
-    >
-      <a
-        href="#pilih-hewan"
-        class="flex flex-col items-center text-slate-600 hover:text-emerald-700 text-[10px] font-bold"
-      >
-        <i class="fa-solid fa-bullseye text-lg mb-0.5"></i> Target
-      </a>
-      <a
-        href="#form-setoran-card"
-        onclick="focusDepositInput()"
-        class="flex flex-col items-center text-emerald-700 font-bold text-[10px]"
-      >
-        <div
-          class="w-10 h-10 -mt-5 rounded-full bg-emerald-700 text-white flex items-center justify-center shadow-lg border-2 border-white"
-        >
-          <i class="fa-solid fa-plus text-base"></i>
-        </div>
-        <span>Setor</span>
-      </a>
-      <a
-        href="#tracker-tabungan"
-        class="flex flex-col items-center text-slate-600 hover:text-emerald-700 text-[10px] font-bold"
-      >
-        <i class="fa-solid fa-chart-line text-lg mb-0.5"></i> Tracker
-      </a>
-      <a
-        href="#patungan-sapi"
-        class="flex flex-col items-center text-slate-600 hover:text-emerald-700 text-[10px] font-bold"
-      >
-        <i class="fa-solid fa-users text-lg mb-0.5"></i> Patungan
-      </a>
-    </div>
-
-    <!-- ==================== 1. HERO SECTION & COUNTDOWN ==================== -->
-    <section class="relative islamic-pattern text-white overflow-hidden">
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-emerald-950/95 via-emerald-900/90 to-emerald-800/85"
-      ></div>
-      <div
-        class="absolute -top-24 -right-24 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"
-      ></div>
-      <div
-        class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"
-      ></div>
-
-      <div
-        class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14"
-      >
+    <!-- ==================== HERO SECTION & COUNTDOWN ==================== -->
+    <section class="relative islamic-pattern text-white overflow-hidden shrink-0">
+      <div class="absolute inset-0 bg-gradient-to-br from-emerald-950/95 via-emerald-900/90 to-emerald-800/85"></div>
+      
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-7 space-y-6">
-            <div
-              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-800/80 border border-emerald-600/50 text-gold-300 text-xs sm:text-sm font-medium"
-            >
+          
+          <!-- Deskripsi & Timer -->
+          <div class="lg:col-span-7 space-y-4 sm:space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-800/90 border border-emerald-600/50 text-gold-300 text-xs sm:text-sm font-medium">
               <i class="fa-solid fa-moon"></i>
-              <span>Persiapan Ibadah Qurban Idul Adha 1448 H</span>
+              <span>Persiapan Qurban Idul Adha 1448 H</span>
             </div>
 
             <div>
-              <p class="font-arabic text-2xl sm:text-3xl text-gold-400 mb-1">
+              <p class="font-arabic text-xl sm:text-2xl text-gold-400 mb-1">
                 بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم
               </p>
-              <h1
-                class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight"
-              >
-                Wujudkan Niat Suci
-                <span
-                  class="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-amber-300"
-                  >Berqurban Tahun Ini</span
-                >
+              <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                Wujudkan Niat Suci <br class="hidden sm:inline"/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-amber-300">
+                  Berqurban Tahun Ini
+                </span>
               </h1>
-              <p
-                class="mt-3 text-emerald-100/90 text-sm sm:text-base max-w-2xl leading-relaxed"
-              >
-                Rencanakan tabungan qurban Anda secara terukur, pantau setoran
-                harian hingga bulanan, dan kelola patungan qurban sapi bersama
-                keluarga atau sahabat secara transparan.
+              <p class="mt-2.5 text-emerald-100/90 text-xs sm:text-base max-w-xl leading-relaxed">
+                Rencanakan tabungan qurban Anda secara terukur, pantau setoran harian hingga bulanan, dan kelola patungan sapi 1/7 bersama keluarga.
               </p>
             </div>
 
-            <!-- Countdown Timer Box -->
-            <div
-              class="bg-emerald-950/70 backdrop-blur-md border border-emerald-700/60 rounded-2xl p-4 sm:p-5 max-w-xl"
-            >
-              <div
-                class="flex flex-wrap items-center justify-between gap-2 mb-3"
-              >
-                <span
-                  class="text-xs font-semibold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5"
-                >
+            <!-- Box Countdown Timer -->
+            <div class="bg-emerald-950/80 backdrop-blur-md border border-emerald-700/60 rounded-2xl p-4 sm:p-5 max-w-xl">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
                   <i class="fa-regular fa-calendar-check text-gold-400"></i>
-                  Estimasi Idul Adha (17 Mei 2027)
+                  Estimasi Idul Adha (<span id="target-date-display">17 Mei 2027</span>)
                 </span>
                 <div class="flex items-center gap-1.5 no-print">
-                  <label
-                    for="target-date-input"
-                    class="text-[11px] text-emerald-300"
-                    >Ubah Tgl:</label
-                  >
+                  <label for="target-date-input" class="text-[11px] text-emerald-300">Tgl Target:</label>
                   <input
                     type="date"
                     id="target-date-input"
                     value="2027-05-17"
                     onchange="updateTargetDate(this.value)"
-                    class="bg-emerald-950 text-white text-xs rounded-lg px-2 py-1 border border-emerald-700 focus:outline-none focus:border-gold-400"
+                    class="bg-emerald-900 text-white text-xs rounded-lg px-2 py-1 border border-emerald-700 focus:outline-none focus:border-gold-400"
                   />
                 </div>
               </div>
 
               <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-                <div
-                  class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2.5 px-2"
-                >
-                  <span
-                    id="cd-days"
-                    class="block text-2xl sm:text-3xl font-extrabold text-gold-400"
-                    >000</span
-                  >
-                  <span
-                    class="text-[11px] sm:text-xs text-emerald-200 font-medium"
-                    >Hari</span
-                  >
+                <div class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2 px-1 sm:py-3">
+                  <span id="cd-days" class="block text-xl sm:text-3xl font-extrabold text-gold-400">000</span>
+                  <span class="text-[10px] sm:text-xs text-emerald-200 font-medium">Hari</span>
                 </div>
-                <div
-                  class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2.5 px-2"
-                >
-                  <span
-                    id="cd-hours"
-                    class="block text-2xl sm:text-3xl font-extrabold text-white"
-                    >00</span
-                  >
-                  <span
-                    class="text-[11px] sm:text-xs text-emerald-200 font-medium"
-                    >Jam</span
-                  >
+                <div class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2 px-1 sm:py-3">
+                  <span id="cd-hours" class="block text-xl sm:text-3xl font-extrabold text-white">00</span>
+                  <span class="text-[10px] sm:text-xs text-emerald-200 font-medium">Jam</span>
                 </div>
-                <div
-                  class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2.5 px-2"
-                >
-                  <span
-                    id="cd-minutes"
-                    class="block text-2xl sm:text-3xl font-extrabold text-white"
-                    >00</span
-                  >
-                  <span
-                    class="text-[11px] sm:text-xs text-emerald-200 font-medium"
-                    >Menit</span
-                  >
+                <div class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2 px-1 sm:py-3">
+                  <span id="cd-minutes" class="block text-xl sm:text-3xl font-extrabold text-white">00</span>
+                  <span class="text-[10px] sm:text-xs text-emerald-200 font-medium">Menit</span>
                 </div>
-                <div
-                  class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2.5 px-2"
-                >
-                  <span
-                    id="cd-seconds"
-                    class="block text-2xl sm:text-3xl font-extrabold text-emerald-300"
-                    >00</span
-                  >
-                  <span
-                    class="text-[11px] sm:text-xs text-emerald-200 font-medium"
-                    >Detik</span
-                  >
+                <div class="bg-emerald-900/90 border border-emerald-700/70 rounded-xl py-2 px-1 sm:py-3">
+                  <span id="cd-seconds" class="block text-xl sm:text-3xl font-extrabold text-emerald-300">00</span>
+                  <span class="text-[10px] sm:text-xs text-emerald-200 font-medium">Detik</span>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Ringkasan Status Tabungan Aktif -->
           <div class="lg:col-span-5">
-            <div
-              class="bg-white text-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl border-2 border-gold-400/50 relative overflow-hidden"
-            >
-              <div
-                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gold-100 to-transparent rounded-bl-full opacity-70 pointer-events-none"
-              ></div>
-
-              <div class="flex items-center justify-between mb-4">
+            <div class="bg-white text-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl border-2 border-gold-400/50 relative overflow-hidden">
+              <div class="flex items-center justify-between mb-3">
                 <div>
-                  <span
-                    class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg"
-                    >Ringkasan Tabungan</span
-                  >
-                  <h2
-                    id="hero-animal-name"
-                    class="text-lg font-bold text-slate-900 mt-2"
-                  >
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                    Ringkasan Tabungan
+                  </span>
+                  <h2 id="hero-animal-name" class="text-base sm:text-lg font-bold text-slate-900 mt-2">
                     Sapi 1/7 (Patungan)
                   </h2>
                 </div>
-                <div
-                  id="hero-animal-icon-wrapper"
-                  class="w-12 h-12 rounded-2xl bg-gold-100 text-gold-600 flex items-center justify-center text-2xl shadow-inner"
-                >
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gold-100 text-gold-600 flex items-center justify-center text-xl sm:text-2xl shrink-0 shadow-inner">
                   <i id="hero-animal-icon" class="fa-solid fa-cow"></i>
                 </div>
               </div>
 
-              <div class="my-5">
-                <p class="text-xs text-slate-500 font-medium">
-                  Total Dana Terkumpul
-                </p>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <span
-                    id="hero-total-saved"
-                    class="text-3xl sm:text-4xl font-extrabold text-emerald-800 tracking-tight"
-                    >Rp 0</span
-                  >
+              <div class="my-4 sm:my-5">
+                <p class="text-xs text-slate-500 font-medium">Total Dana Terkumpul</p>
+                <div class="flex items-baseline gap-2 mt-0.5">
+                  <span id="hero-total-saved" class="text-2xl sm:text-4xl font-extrabold text-emerald-800 tracking-tight">
+                    Rp 0
+                  </span>
                 </div>
                 <div class="flex flex-wrap items-center gap-2 mt-1">
                   <p class="text-xs text-slate-500">
-                    dari target
-                    <span
-                      id="hero-target-price"
-                      class="font-bold text-slate-700"
-                      >Rp 3.000.000</span
-                    >
+                    dari target <span id="hero-target-price" class="font-bold text-slate-700">Rp 3.000.000</span>
                   </p>
                   <button
                     type="button"
                     onclick="openQuickTargetEdit()"
                     class="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200 transition no-print"
                   >
-                    <i class="fa-solid fa-pen-to-square mr-1"></i>Ubah Target
+                    <i class="fa-solid fa-pen-to-square mr-1"></i>Ubah
                   </button>
                 </div>
               </div>
 
-              <div class="space-y-2 mb-5">
+              <!-- Progress Bar -->
+              <div class="space-y-1.5 mb-5">
                 <div class="flex justify-between text-xs font-bold">
-                  <span class="text-emerald-700" id="hero-progress-pct"
-                    >0% Tercapai</span
-                  >
-                  <span class="text-amber-600" id="hero-remaining-text"
-                    >Kurang Rp 3.000.000</span
-                  >
+                  <span class="text-emerald-700" id="hero-progress-pct">0% Tercapai</span>
+                  <span class="text-amber-600" id="hero-remaining-text">Kurang Rp 3.000.000</span>
                 </div>
-                <div
-                  class="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200"
-                >
+                <div class="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
                   <div
                     id="hero-progress-bar"
                     class="h-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-gold-500 rounded-full transition-all duration-700 ease-out"
@@ -538,412 +497,278 @@ img {
                 </div>
               </div>
 
-              <div class="flex gap-3 no-print">
+              <!-- Quick Action Button -->
+              <div class="flex gap-2.5 no-print">
                 <a
                   href="#form-setoran-card"
                   onclick="focusDepositInput()"
-                  class="flex-1 bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold py-3 px-4 rounded-xl text-sm text-center shadow-md shadow-emerald-900/20 transition flex items-center justify-center gap-2"
+                  class="flex-1 min-h-[44px] bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold px-4 rounded-xl text-xs sm:text-sm text-center shadow-md transition flex items-center justify-center gap-2"
                 >
                   <i class="fa-solid fa-circle-plus text-gold-400"></i>
                   Catat Setoran
                 </a>
                 <a
                   href="#kalkulator-section"
-                  class="px-4 py-3 rounded-xl bg-gold-50 hover:bg-gold-100 text-gold-700 font-bold text-sm border border-gold-200 transition flex items-center justify-center"
-                  title="Lihat Rencana Nabung"
+                  class="min-h-[44px] w-12 rounded-xl bg-gold-50 hover:bg-gold-100 text-gold-700 font-bold text-sm border border-gold-200 transition flex items-center justify-center shrink-0"
+                  title="Lihat Strategi Menabung"
                 >
                   <i class="fa-solid fa-calculator"></i>
                 </a>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-      <!-- ==================== 2. PILIHAN TARGET HEWAN QURBAN (2 PILIHAN) ==================== -->
+    <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 sm:space-y-14 flex-1">
+      
+      <!-- ==================== 1. PILIHAN TARGET HEWAN QURBAN ==================== -->
       <section id="pilih-hewan" class="scroll-mt-20">
-        <div
-          class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2"
-        >
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
           <div>
-            <span
-              class="text-xs font-bold uppercase tracking-wider text-gold-600"
-              >Langkah 1 • Tentukan Niat & Target</span
-            >
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+            <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Langkah 1 • Tentukan Target</span>
+            <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1">
               Pilih Target Hewan Qurban
             </h2>
           </div>
-          <p class="text-sm text-slate-500">
-            Pilih salah satu dari 2 opsi di bawah atau ubah nominal sesuai
-            kebutuhan Anda.
+          <p class="text-xs sm:text-sm text-slate-500">
+            Klik kartu untuk memilih target aktif atau ubah nominal sesuai harga daerah Anda.
           </p>
         </div>
 
-        <!-- Grid 2 Kartu Pilihan Hewan -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-6"
-          id="animal-cards-container"
-        >
-          <!-- Diisi via JavaScript -->
+        <!-- Grid Responsif Hewan Qurban: 1 Kolom di HP, 2 di Tablet, 4 di Laptop/PC -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5" id="animal-cards-container">
+          <!-- Di-render via JS -->
         </div>
 
-        <!-- Panel Cepat Ubah Nominal Target Aktif -->
+        <!-- Panel Sesuaikan Nominal Target Aktif -->
         <div
           id="quick-target-panel"
           class="mt-5 bg-white border border-emerald-200 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print"
         >
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 border border-gold-200 flex items-center justify-center text-base shrink-0"
-            >
+            <div class="w-10 h-10 rounded-xl bg-gold-50 text-gold-600 border border-gold-200 flex items-center justify-center text-base shrink-0">
               <i class="fa-solid fa-pen-ruler"></i>
             </div>
             <div>
-              <h3 class="font-bold text-sm text-slate-900">
-                Ubah Nominal Target Aktif (<span
-                  id="quick-active-animal-label"
-                  class="text-emerald-700"
-                  >Sapi 1/7</span
-                >)
+              <h3 class="font-bold text-xs sm:text-sm text-slate-900">
+                Ubah Nominal Target (<span id="quick-active-animal-label" class="text-emerald-700">Sapi 1/7</span>)
               </h3>
-              <p class="text-xs text-slate-500">
-                Sesuaikan harga paket qurban kapan saja secara langsung.
+              <p class="text-[11px] sm:text-xs text-slate-500">
+                Sesuaikan target biaya dengan kesepakatan panitia atau pemasok hewan lokal.
               </p>
             </div>
           </div>
+
           <div class="flex items-center gap-2.5 w-full sm:w-auto">
             <div class="relative flex-1 sm:w-48">
-              <span
-                class="absolute left-3.5 top-2.5 text-xs font-bold text-emerald-700"
-                >Rp</span
-              >
+              <span class="absolute left-3.5 top-2.5 text-xs font-bold text-emerald-700">Rp</span>
               <input
                 type="number"
                 id="quick-active-price-input"
                 min="100000"
                 step="50000"
                 placeholder="3000000"
-                class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                class="w-full min-h-[44px] pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
             <button
               type="button"
               onclick="applyQuickActivePrice()"
-              class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition shadow-sm shrink-0"
+              class="min-h-[44px] px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition shadow-sm shrink-0"
             >
-              Simpan Nominal
+              Simpan Target
             </button>
           </div>
         </div>
       </section>
 
-      <!-- ==================== 3. KALKULATOR & PERENCANA SETORAN ==================== -->
+      <!-- ==================== 2. KALKULATOR STRATEGI MENABUNG ==================== -->
       <section id="kalkulator-section" class="scroll-mt-20">
-        <div
-          class="bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden"
-        >
-          <div
-            class="absolute right-0 top-0 opacity-10 text-9xl pointer-events-none -mr-6 -mt-6"
-          >
-            <i class="fa-solid fa-mosque"></i>
-          </div>
-
+        <div class="bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-3xl p-5 sm:p-8 text-white shadow-xl relative overflow-hidden">
           <div class="relative z-10">
-            <div
-              class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-emerald-800"
-            >
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-emerald-800">
               <div>
-                <span
-                  class="text-xs font-bold uppercase tracking-wider text-gold-400"
-                  >Langkah 2 • Strategi Menabung</span
-                >
-                <h2 class="text-2xl font-extrabold mt-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-gold-400">Langkah 2 • Strategi Menabung</span>
+                <h2 class="text-xl sm:text-2xl font-extrabold mt-0.5">
                   Rencana Setoran Otomatis Menuju Idul Adha
                 </h2>
-                <p class="text-sm text-emerald-200 mt-1">
-                  Dihitung dari sisa kekurangan (<span
-                    id="calc-remaining-label"
-                    class="font-bold text-white"
-                    >Rp 0</span
-                  >) dibagi sisa waktu (<span
-                    id="calc-days-left-label"
-                    class="font-bold text-gold-300"
-                    >0 hari</span
-                  >).
+                <p class="text-xs sm:text-sm text-emerald-200 mt-1">
+                  Sisa kekurangan <span id="calc-remaining-label" class="font-bold text-white">Rp 0</span> dibagi sisa <span id="calc-days-left-label" class="font-bold text-gold-300">0 hari</span>.
                 </p>
               </div>
-              <div
-                class="bg-emerald-800/80 border border-emerald-700 px-4 py-2.5 rounded-2xl text-xs"
-              >
-                <span class="text-emerald-300 block">Status Target:</span>
-                <span
-                  id="calc-status-badge"
-                  class="font-bold text-sm text-gold-400"
-                  >Sedang Berjalan</span
-                >
+              <div class="bg-emerald-800/80 border border-emerald-700 px-3.5 py-2 rounded-2xl text-xs w-fit">
+                <span class="text-emerald-300 block text-[10px]">Status Target:</span>
+                <span id="calc-status-badge" class="font-bold text-xs sm:text-sm text-gold-400">Sedang Berjalan</span>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
-              <div
-                class="bg-white/10 backdrop-blur-sm border border-emerald-700/70 rounded-2xl p-5 hover:bg-white/15 transition"
-              >
-                <div class="flex items-center justify-between mb-3">
-                  <span
-                    class="text-xs font-bold uppercase tracking-wider text-emerald-300"
-                    >Opsi 1 • Setoran Harian</span
-                  >
-                  <span
-                    class="w-8 h-8 rounded-lg bg-emerald-800 text-gold-400 flex items-center justify-center text-sm"
-                  >
-                    <i class="fa-solid fa-sun"></i>
-                  </span>
+            <!-- 3 Opsi Setoran Responsif: 1 Kolom HP, 3 Kolom Tablet/Desktop -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 mt-6">
+              
+              <!-- Harian -->
+              <div class="bg-white/10 backdrop-blur-sm border border-emerald-700/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">Opsi 1 • Harian</span>
+                    <span class="w-7 h-7 rounded-lg bg-emerald-800 text-gold-400 flex items-center justify-center text-xs">
+                      <i class="fa-solid fa-sun"></i>
+                    </span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-extrabold text-white" id="plan-daily">Rp 0</div>
+                  <p class="text-xs text-emerald-200 mt-1">
+                    Selama <span id="plan-days-count" class="font-semibold text-white">0</span> hari ke depan
+                  </p>
                 </div>
-                <div
-                  class="text-2xl sm:text-3xl font-extrabold text-white"
-                  id="plan-daily"
-                >
-                  Rp 0
-                </div>
-                <p class="text-xs text-emerald-200 mt-1.5">
-                  Per hari selama
-                  <span id="plan-days-count" class="font-semibold text-white"
-                    >0</span
-                  >
-                  hari ke depan
-                </p>
                 <button
+                  type="button"
                   onclick="quickFillDeposit('daily')"
-                  class="mt-4 w-full py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold text-white border border-emerald-600 transition no-print"
+                  class="mt-4 min-h-[40px] w-full py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold text-white border border-emerald-600 transition no-print"
                 >
                   Gunakan Nominal Ini
                 </button>
               </div>
 
-              <div
-                class="bg-white/10 backdrop-blur-sm border-2 border-gold-400/70 rounded-2xl p-5 relative hover:bg-white/15 transition"
-              >
-                <span
-                  class="absolute -top-3 right-4 bg-gold-500 text-emerald-950 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full"
-                  >Paling Populer</span
-                >
-                <div class="flex items-center justify-between mb-3">
-                  <span
-                    class="text-xs font-bold uppercase tracking-wider text-gold-300"
-                    >Opsi 2 • Setoran Mingguan</span
-                  >
-                  <span
-                    class="w-8 h-8 rounded-lg bg-gold-500/20 text-gold-400 flex items-center justify-center text-sm"
-                  >
-                    <i class="fa-solid fa-calendar-week"></i>
-                  </span>
+              <!-- Mingguan -->
+              <div class="bg-white/10 backdrop-blur-sm border-2 border-gold-400/70 rounded-2xl p-4 sm:p-5 relative flex flex-col justify-between">
+                <span class="absolute -top-2.5 right-4 bg-gold-500 text-emerald-950 text-[9px] sm:text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">
+                  Paling Populer
+                </span>
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gold-300">Opsi 2 • Mingguan</span>
+                    <span class="w-7 h-7 rounded-lg bg-gold-500/20 text-gold-400 flex items-center justify-center text-xs">
+                      <i class="fa-solid fa-calendar-week"></i>
+                    </span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-extrabold text-gold-400" id="plan-weekly">Rp 0</div>
+                  <p class="text-xs text-emerald-200 mt-1">
+                    Selama <span id="plan-weeks-count" class="font-semibold text-white">0</span> pekan (tiap Jumat)
+                  </p>
                 </div>
-                <div
-                  class="text-2xl sm:text-3xl font-extrabold text-gold-400"
-                  id="plan-weekly"
-                >
-                  Rp 0
-                </div>
-                <p class="text-xs text-emerald-200 mt-1.5">
-                  Per pekan (tiap Jumat) selama
-                  <span id="plan-weeks-count" class="font-semibold text-white"
-                    >0</span
-                  >
-                  pekan
-                </p>
                 <button
+                  type="button"
                   onclick="quickFillDeposit('weekly')"
-                  class="mt-4 w-full py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-xs font-bold text-emerald-950 transition shadow-sm no-print"
+                  class="mt-4 min-h-[40px] w-full py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-xs font-bold text-emerald-950 transition shadow-sm no-print"
                 >
                   Gunakan Nominal Ini
                 </button>
               </div>
 
-              <div
-                class="bg-white/10 backdrop-blur-sm border border-emerald-700/70 rounded-2xl p-5 hover:bg-white/15 transition"
-              >
-                <div class="flex items-center justify-between mb-3">
-                  <span
-                    class="text-xs font-bold uppercase tracking-wider text-emerald-300"
-                    >Opsi 3 • Setoran Bulanan</span
-                  >
-                  <span
-                    class="w-8 h-8 rounded-lg bg-emerald-800 text-gold-400 flex items-center justify-center text-sm"
-                  >
-                    <i class="fa-solid fa-calendar-days"></i>
-                  </span>
+              <!-- Bulanan -->
+              <div class="bg-white/10 backdrop-blur-sm border border-emerald-700/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">Opsi 3 • Bulanan</span>
+                    <span class="w-7 h-7 rounded-lg bg-emerald-800 text-gold-400 flex items-center justify-center text-xs">
+                      <i class="fa-solid fa-calendar-days"></i>
+                    </span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-extrabold text-white" id="plan-monthly">Rp 0</div>
+                  <p class="text-xs text-emerald-200 mt-1">
+                    Selama <span id="plan-months-count" class="font-semibold text-white">0</span> bulan (gajian)
+                  </p>
                 </div>
-                <div
-                  class="text-2xl sm:text-3xl font-extrabold text-white"
-                  id="plan-monthly"
-                >
-                  Rp 0
-                </div>
-                <p class="text-xs text-emerald-200 mt-1.5">
-                  Per bulan (saat gajian) selama
-                  <span id="plan-months-count" class="font-semibold text-white"
-                    >0</span
-                  >
-                  bulan
-                </p>
                 <button
+                  type="button"
                   onclick="quickFillDeposit('monthly')"
-                  class="mt-4 w-full py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold text-white border border-emerald-600 transition no-print"
+                  class="mt-4 min-h-[40px] w-full py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold text-white border border-emerald-600 transition no-print"
                 >
                   Gunakan Nominal Ini
                 </button>
               </div>
+
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ==================== 4. TRACKER & GRAFIK (STOCKBIT STYLE) ==================== -->
+      <!-- ==================== 3. TRACKER & GRAFIK TABUNGAN ==================== -->
       <section id="tracker-tabungan" class="scroll-mt-20 space-y-6">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-gold-600"
-            >Langkah 3 • Catat & Pantau</span
-          >
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-            Tracker Progres & Grafik Stockbit-Style
+          <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Langkah 3 • Catat & Pantau</span>
+          <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+            Tracker Progres & Riwayat Setoran
           </h2>
         </div>
 
+        <!-- Grid Responsif: Stack 1 Kolom di HP/Tablet, 12-Kolom di Desktop -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Form Tambah Setoran -->
-          <div class="lg:col-span-5 space-y-6 no-print" id="form-setoran-card">
-            <div
-              class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80"
-            >
-              <div class="flex items-center gap-3 mb-5">
-                <div
-                  class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg"
-                >
+          
+          <!-- Form Catat Setoran & Rekening Transfer (5 Kolom di Desktop) -->
+          <div class="lg:col-span-5 space-y-5 no-print" id="form-setoran-card">
+            
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0">
                   <i class="fa-solid fa-piggy-bank"></i>
                 </div>
                 <div>
-                  <h3 class="font-bold text-lg text-slate-900">
-                    Tambah Setoran Baru
-                  </h3>
-                  <p class="text-xs text-slate-500">
-                    Catat setoran dengan nama penyetor & metode pembayaran
-                  </p>
+                  <h3 class="font-bold text-base sm:text-lg text-slate-900">Tambah Setoran Baru</h3>
+                  <p class="text-xs text-slate-500">Tersimpan otomatis di memori browser</p>
                 </div>
               </div>
 
               <!-- Rekening Tujuan Transfer -->
-              <div
-                class="mb-5 p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-gold-50/60 border border-emerald-200/90 relative overflow-hidden"
-              >
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  <span
-                    class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5"
-                  >
-                    <i class="fa-solid fa-building-columns text-gold-600"></i>
-                    Rekening Tujuan Transfer
+              <div class="mb-4 p-3.5 rounded-2xl bg-gradient-to-br from-emerald-50 to-gold-50/60 border border-emerald-200/90">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                    <i class="fa-solid fa-building-columns text-gold-600"></i> Rekening Transfer
                   </span>
-                  <span
-                    class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-200"
-                    >BSI (451)</span
-                  >
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-200">
+                    BSI (Kode: 451)
+                  </span>
                 </div>
-                <div
-                  class="flex items-center justify-between gap-2 bg-white/90 px-3.5 py-2.5 rounded-xl border border-emerald-100"
-                >
+                <div class="flex items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-emerald-100">
                   <div>
-                    <p
-                      id="bank-account-number"
-                      class="font-mono font-extrabold text-base sm:text-lg text-slate-900 tracking-wide"
-                    >
+                    <p id="bank-account-number" class="font-mono font-extrabold text-sm sm:text-base text-slate-900">
                       7123456789
                     </p>
-                    <p class="text-xs text-slate-600 font-medium">
-                      a.n.
-                      <strong class="text-emerald-900">Panitia QurbanKu</strong>
-                    </p>
+                    <p class="text-[11px] text-slate-600">a.n. <strong class="text-emerald-900">Panitia QurbanKu</strong></p>
                   </div>
                   <button
                     type="button"
                     onclick="copyBankAccount()"
-                    class="px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm shrink-0"
+                    class="min-h-[38px] px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm shrink-0"
                   >
-                    <i class="fa-regular fa-copy"></i> Salin
+                    <i class="fa-regular fa-copy"></i>
+                    <span id="copy-rekening-text">Salin</span>
                   </button>
                 </div>
               </div>
 
-              <!-- Form Input -->
-              <form id="deposit-form" onsubmit="handleAddDeposit(event)" class="space-y-4">
+              <!-- Form Input Setoran -->
+              <form id="deposit-form" class="space-y-3.5">
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5"
-                    >Nama Penyetor <span class="text-rose-500">*</span></label
-                  >
+                  <label for="deposit-amount" class="block text-xs font-bold text-slate-700 mb-1">Nominal Setoran (Rp) *</label>
                   <div class="relative">
-                    <span class="absolute left-3.5 top-3 text-slate-400 text-xs">
-                      <i class="fa-solid fa-user"></i>
-                    </span>
-                    <input
-                      type="text"
-                      id="deposit-name"
-                      required
-                      placeholder="Contoh: Budi Santoso"
-                      class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5"
-                    >Nominal Setoran (Rp)
-                    <span class="text-rose-500">*</span></label
-                  >
-                  <div class="relative">
-                    <span
-                      class="absolute left-3.5 top-2.5 text-xs font-extrabold text-emerald-700"
-                      >Rp</span
-                    >
+                    <span class="absolute left-3.5 top-2.5 text-xs font-extrabold text-emerald-700">Rp</span>
                     <input
                       type="number"
                       id="deposit-amount"
+                      min="1000"
+                      step="1000"
                       required
-                      min="10000"
-                      step="10000"
                       placeholder="100000"
-                      class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      class="w-full min-h-[44px] pl-10 pr-3 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
-                  <!-- Tombol Nominal Cepat -->
-                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2">
-                    <button
-                      type="button"
-                      onclick="addQuickNominal(50000)"
-                      class="py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold border border-slate-200 transition"
-                    >
+                  
+                  <!-- Quick Preset Amount Buttons -->
+                  <div class="flex flex-wrap gap-1.5 mt-2">
+                    <button type="button" onclick="setPresetAmount(50000)" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 text-[11px] font-bold text-slate-600 transition">
                       +50rb
                     </button>
-                    <button
-                      type="button"
-                      onclick="addQuickNominal(100000)"
-                      class="py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold border border-slate-200 transition"
-                    >
+                    <button type="button" onclick="setPresetAmount(100000)" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 text-[11px] font-bold text-slate-600 transition">
                       +100rb
                     </button>
-                    <button
-                      type="button"
-                      onclick="addQuickNominal(250000)"
-                      class="py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold border border-slate-200 transition"
-                    >
+                    <button type="button" onclick="setPresetAmount(250000)" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 text-[11px] font-bold text-slate-600 transition">
                       +250rb
                     </button>
-                    <button
-                      type="button"
-                      onclick="addQuickNominal(500000)"
-                      class="py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold border border-slate-200 transition"
-                    >
+                    <button type="button" onclick="setPresetAmount(500000)" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 text-[11px] font-bold text-slate-600 transition">
                       +500rb
                     </button>
                   </div>
@@ -951,1386 +776,1222 @@ img {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5"
-                      >Metode Pembayaran</label
-                    >
-                    <select
-                      id="deposit-method"
-                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
-                    >
-                      <option value="Transfer Bank">Transfer Bank</option>
-                      <option value="E-Wallet / QRIS">E-Wallet / QRIS</option>
-                      <option value="Setor Tunai">Setor Tunai</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5"
-                      >Tanggal Setoran</label
-                    >
+                    <label for="deposit-date" class="block text-xs font-bold text-slate-700 mb-1">Tanggal *</label>
                     <input
                       type="date"
                       id="deposit-date"
                       required
-                      class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                      class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
+                  </div>
+                  <div>
+                    <label for="deposit-method" class="block text-xs font-bold text-slate-700 mb-1">Metode</label>
+                    <select
+                      id="deposit-method"
+                      class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                    >
+                      <option value="Transfer Bank (BSI)">Transfer Bank (BSI)</option>
+                      <option value="E-Wallet / QRIS">E-Wallet / QRIS</option>
+                      <option value="Setoran Tunai">Setoran Tunai</option>
+                      <option value="Autodebet / Gajian">Autodebet / Gajian</option>
+                    </select>
                   </div>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1.5"
-                    >Catatan / Keterangan (Opsional)</label
-                  >
+                  <label for="deposit-note" class="block text-xs font-bold text-slate-700 mb-1">Catatan</label>
                   <input
                     type="text"
                     id="deposit-note"
-                    placeholder="Contoh: Cicilan ke-1"
-                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Contoh: Tabungan pekan ke-1"
+                    class="w-full min-h-[44px] px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  class="w-full bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2"
+                  class="w-full min-h-[46px] py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2"
                 >
-                  <i class="fa-solid fa-floppy-disk text-gold-400"></i> Simpan
-                  Setoran
+                  <i class="fa-solid fa-check-circle text-gold-400"></i>
+                  Simpan Setoran
                 </button>
               </form>
             </div>
           </div>
 
-          <!-- Kolom Kanan (7 Kolom): Grafik Stockbit-Style & Riwayat -->
-          <div class="lg:col-span-7 space-y-6">
-            <!-- Grafik Stockbit Style -->
-            <div
-              class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80 flex flex-col justify-between"
-            >
-              <!-- Stockbit Ticker Header -->
-              <div
-                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100"
-              >
+          <!-- Grafik Chart.js & Tabel Riwayat (7 Kolom di Desktop) -->
+          <div class="lg:col-span-7 space-y-5">
+            
+            <!-- Grafik -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <div>
-                  <div class="flex items-center gap-2">
-                    <span
-                      class="text-[11px] font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md"
-                      >QURBANKU TIKER</span
-                    >
-                    <span
-                      id="stockbit-date-label"
-                      class="text-xs text-slate-400 font-medium"
-                      >Menampilkan Saldo</span
-                    >
-                  </div>
-                  <div class="flex items-baseline gap-2.5 mt-1">
-                    <h3
-                      id="stockbit-price-display"
-                      class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight"
-                    >
-                      Rp 0
-                    </h3>
-                  </div>
-                  <p
-                    id="stockbit-desc-display"
-                    class="text-xs text-slate-500 mt-0.5 font-medium truncate max-w-xs sm:max-w-md"
-                  >
-                    Arahkan kursor atau sentuh grafik untuk melihat riwayat
-                    transaksi
-                  </p>
+                  <h3 class="font-bold text-base sm:text-lg text-slate-900">Grafik Akumulasi Tabungan</h3>
+                  <p class="text-xs text-slate-500">Perkembangan setoran menuju target qurban</p>
                 </div>
-
-                <!-- Kontrol Navigasi & Tab Grafik -->
-                <div class="flex flex-wrap items-center gap-2 no-print">
-                  <!-- Mode Tab: Per Pemasukan vs Per Hari -->
-                  <div
-                    class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200"
-                  >
-                    <button
-                      type="button"
-                      id="mode-tx-btn"
-                      onclick="setChartMode('tx')"
-                      class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-emerald-800 shadow-sm transition"
-                    >
-                      Per Pemasukan
-                    </button>
-                    <button
-                      type="button"
-                      id="mode-day-btn"
-                      onclick="setChartMode('day')"
-                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition"
-                    >
-                      Per Hari
-                    </button>
-                  </div>
-
-                  <!-- Tombol Geser Horizontal & Zoom -->
-                  <div class="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onclick="scrollChart('left')"
-                      title="Geser Kiri"
-                      class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 flex items-center justify-center text-xs border border-slate-200 transition"
-                    >
-                      <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <button
-                      type="button"
-                      onclick="scrollChart('right')"
-                      title="Geser Kanan"
-                      class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 flex items-center justify-center text-xs border border-slate-200 transition"
-                    >
-                      <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button
-                      type="button"
-                      onclick="toggleChartZoom()"
-                      id="zoom-btn"
-                      title="Perlebar Grafik (Scrollable)"
-                      class="px-2.5 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition"
-                    >
-                      Geser ↔
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Container Canvas dengan Wrapper Scrollable -->
-              <div class="mt-4 relative">
-                <div
-                  id="chart-scroll-wrapper"
-                  class="overflow-x-auto overflow-y-hidden pb-2"
-                >
-                  <div
-                    id="chart-inner-container"
-                    class="relative h-64 sm:h-72 w-full min-w-[500px]"
-                  >
-                    <canvas id="savingsChart"></canvas>
-                  </div>
-                </div>
-                <p
-                  class="text-[10px] text-slate-400 text-center mt-1 sm:hidden no-print"
-                >
-                  <i class="fa-solid fa-arrows-left-right mr-1"></i> Geser
-                  grafik ke samping untuk melihat data lainnya
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tabel Riwayat Setoran -->
-        <div
-          class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80"
-        >
-          <div
-            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
-          >
-            <div>
-              <h3 class="font-bold text-lg text-slate-900">
-                Riwayat Setoran Tabungan
-              </h3>
-              <p class="text-xs text-slate-500">
-                Daftar lengkap transaksi setoran yang telah dicatat
-              </p>
-            </div>
-            <!-- Filter & Search Riwayat -->
-            <div
-              class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto no-print"
-            >
-              <div class="relative flex-1 sm:w-56">
-                <span class="absolute left-3 top-2.5 text-slate-400 text-xs">
-                  <i class="fa-solid fa-search"></i>
+                <span id="chart-summary-badge" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  0 Transaksi
                 </span>
-                <input
-                  type="text"
-                  id="search-deposit"
-                  oninput="renderDepositTable()"
-                  placeholder="Cari nama penyetor..."
-                  class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
               </div>
-              <select
-                id="filter-method"
-                onchange="renderDepositTable()"
-                class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-              >
-                <option value="all">Semua Metode</option>
-                <option value="Transfer Bank">Transfer Bank</option>
-                <option value="E-Wallet / QRIS">E-Wallet / QRIS</option>
-                <option value="Setor Tunai">Setor Tunai</option>
-              </select>
+              <div class="relative h-56 sm:h-64 w-full">
+                <canvas id="savingsChart"></canvas>
+              </div>
             </div>
-          </div>
 
-          <div
-            class="overflow-x-auto rounded-2xl border border-slate-200"
-            id="deposit-table-wrapper"
-          >
-            <table class="w-full text-left border-collapse text-sm">
-              <thead>
-                <tr
-                  class="bg-emerald-900 text-white text-xs uppercase tracking-wider"
-                >
-                  <th class="py-3 px-4 font-semibold">Tanggal</th>
-                  <th class="py-3 px-4 font-semibold">Nama Penyetor</th>
-                  <th class="py-3 px-4 font-semibold">Nominal</th>
-                  <th class="py-3 px-4 font-semibold">Metode</th>
-                  <th class="py-3 px-4 font-semibold">Keterangan</th>
-                  <th class="py-3 px-4 font-semibold text-center no-print">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody id="deposit-table-body" class="divide-y divide-slate-100">
-                <!-- Diisi via JavaScript -->
-              </tbody>
-            </table>
+            <!-- Tabel Riwayat -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div>
+                  <h3 class="font-bold text-base sm:text-lg text-slate-900">Riwayat Setoran</h3>
+                  <p class="text-xs text-slate-500">Kelola dan filter riwayat catatan Anda</p>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                  <input
+                    type="text"
+                    id="deposit-search"
+                    oninput="renderDeposits()"
+                    placeholder="Cari setoran..."
+                    class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full sm:w-36"
+                  />
+                  <button
+                    type="button"
+                    onclick="confirmClearAllDeposits()"
+                    title="Hapus Semua Setoran"
+                    class="min-h-[36px] px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold border border-rose-200 transition shrink-0"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto -mx-2 sm:mx-0">
+                <table class="w-full text-left border-collapse min-w-[480px]">
+                  <thead>
+                    <tr class="border-b border-slate-200 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      <th class="py-2.5 px-2">Tanggal</th>
+                      <th class="py-2.5 px-2">Keterangan & Metode</th>
+                      <th class="py-2.5 px-2 text-right">Nominal</th>
+                      <th class="py-2.5 px-2 text-center no-print">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="deposits-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
+                    <!-- Di-render via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      <!-- ==================== 5. KELOMPOK PATUNGAN SAPI (1/7) ==================== -->
+      <!-- ==================== 4. TRACKER PATUNGAN SAPI 1/7 ==================== -->
       <section id="patungan-sapi" class="scroll-mt-20 space-y-6">
-        <div
-          class="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
-        >
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-gold-600"
-              >Kolaborasi Jamaah / Keluarga</span
-            >
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-              Kelompok Patungan Sapi (1/7 Porsi)
+            <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Langkah 4 • Kolaborasi Sapi 1/7</span>
+            <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+              Tracker Patungan Sapi (7 Shohibul Qurban)
             </h2>
-            <p class="text-sm text-slate-500 mt-1">
-              Sesuai syariat, 1 ekor sapi dapat dipatungan oleh maksimal 7 orang.
-              Pantau kelayakan dan setoran tiap peserta.
-            </p>
-          </div>
-          <button
-            onclick="openAddParticipantModal()"
-            class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm shadow-sm transition flex items-center gap-2 shrink-0 no-print"
-          >
-            <i class="fa-solid fa-user-plus text-gold-400"></i> Tambah Anggota
-            Patungan
-          </button>
-        </div>
-
-        <!-- Progress Kelompok Patungan Sapi -->
-        <div
-          class="bg-white rounded-3xl p-6 shadow-md border border-slate-200/80"
-        >
-          <div
-            class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100"
-          >
-            <div>
-              <span
-                class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg"
-                >Ringkasan Kelompok Sapi #1</span
-              >
-              <h3
-                id="group-summary-title"
-                class="text-xl font-extrabold text-slate-900 mt-2"
-              >
-                Kolektif Qurban Sapi Keluarga Besar
-              </h3>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="text-right">
-                <span class="text-xs text-slate-500 block"
-                  >Total Terkumpul Sapi</span
-                >
-                <span
-                  id="group-total-saved"
-                  class="text-xl font-extrabold text-emerald-800"
-                  >Rp 0</span
-                >
-              </div>
-              <div class="h-10 w-px bg-slate-200"></div>
-              <div class="text-left">
-                <span class="text-xs text-slate-500 block">Total Target Sapi (7x)</span>
-                <span
-                  id="group-total-target"
-                  class="text-xl font-extrabold text-slate-900"
-                  >Rp 21.000.000</span
-                >
-              </div>
-            </div>
           </div>
 
-          <!-- Grid Daftar 7 Slot Patungan Sapi -->
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-            id="participants-grid"
-          >
-            <!-- Diisi via JavaScript -->
-          </div>
-        </div>
-      </section>
-
-      <!-- ==================== 6. PANDUAN QURBAN ==================== -->
-      <section id="panduan-qurban" class="scroll-mt-20">
-        <div
-          class="bg-gradient-to-br from-slate-900 to-slate-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl"
-        >
-          <div class="flex items-center gap-3 mb-6">
-            <div
-              class="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center text-lg"
-            >
-              <i class="fa-solid fa-book-open"></i>
-            </div>
-            <div>
-              <span
-                class="text-xs font-bold uppercase tracking-wider text-gold-400"
-                >Edukasi & Syariat</span
-              >
-              <h2 class="text-xl sm:text-2xl font-extrabold">
-                Panduan Praktis Ibadah Qurban
-              </h2>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div
-              class="bg-white/5 border border-slate-800 rounded-2xl p-5 hover:bg-white/10 transition"
-            >
-              <div class="text-gold-400 text-lg mb-3 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved"></i> 1. Syarat Hewan Sah
-              </div>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Hewan harus sehat, tidak cacat (buta sebelah, pincang parah,
-                sangat kurus), dan telah cukup umur: Kambing/domba minimal 1
-                tahun (atau poel), sedangkan Sapi/kerbau minimal 2 tahun.
-              </p>
-            </div>
-            <div
-              class="bg-white/5 border border-slate-800 rounded-2xl p-5 hover:bg-white/10 transition"
-            >
-              <div class="text-gold-400 text-lg mb-3 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-handshake"></i> 2. Ketentuan Patungan
-              </div>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                1 ekor sapi atau unta dapat dibeli secara patungan oleh maksimal
-                7 orang (1/7 bagian per orang). Sementara kambing atau domba
-                hanya sah untuk 1 orang per ekor.
-              </p>
-            </div>
-            <div
-              class="bg-white/5 border border-slate-800 rounded-2xl p-5 hover:bg-white/10 transition"
-            >
-              <div class="text-gold-400 text-lg mb-3 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-clock"></i> 3. Waktu Penyembelihan
-              </div>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                Penyembelihan qurban dilaksanakan mulai setelah selesai shalat
-                Idul Adha (10 Dzulhijjah) hingga hari Tasyrik berakhir (tanggal
-                11, 12, dan 13 Dzulhijjah) sebelum matahari terbenam.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- ==================== MODAL TAMBAH / EDIT ANGGOTA PATUNGAN ==================== -->
-    <div
-      id="participant-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 no-print"
-    >
-      <div
-        class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0"
-        id="participant-modal-box"
-      >
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <h3 id="participant-modal-title" class="text-lg font-bold text-slate-900">
-            Tambah Anggota Patungan Sapi
-          </h3>
-          <button
-            onclick="closeParticipantModal()"
-            class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"
-          >
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <form id="participant-form" onsubmit="handleSaveParticipant(event)" class="space-y-4">
-          <input type="hidden" id="participant-id" />
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5"
-              >Nama Peserta / Anggota <span class="text-rose-500">*</span></label
-            >
-            <input
-              type="text"
-              id="participant-name"
-              required
-              placeholder="Contoh: Ahmad Fauzi"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5"
-              >Jumlah Setoran Terkumpul (Rp)
-              <span class="text-rose-500">*</span></label
-            >
-            <input
-              type="number"
-              id="participant-paid"
-              required
-              min="0"
-              step="50000"
-              value="0"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5"
-              >Target Porsi Per Orang (Rp)</label
-            >
-            <input
-              type="number"
-              id="participant-target"
-              required
-              min="100000"
-              step="50000"
-              value="3000000"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50"
-              readonly
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5"
-              >Kontak / Catatan</label
-            >
-            <input
-              type="text"
-              id="participant-note"
-              placeholder="Contoh: Keluarga Bp. Ahmad"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-
-          <div class="flex justify-end gap-3 pt-2">
+          <div class="flex items-center gap-2 no-print">
             <button
               type="button"
-              onclick="closeParticipantModal()"
-              class="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition"
+              onclick="addPatunganMember()"
+              class="min-h-[40px] px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"
             >
-              Batal
+              <i class="fa-solid fa-user-plus text-gold-400"></i>
+              Tambah Slot
             </button>
             <button
-              type="submit"
-              class="px-5 py-2.5 rounded-xl text-sm font-bold bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm transition"
+              type="button"
+              onclick="confirmResetPatungan()"
+              class="min-h-[40px] px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"
             >
-              Simpan Peserta
+              Reset Grup
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80">
+          
+          <!-- Summary Cards Patungan Sapi: 2 Kolom di HP, 4 Kolom di PC -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/80 border border-emerald-100">
+              <span class="text-[11px] sm:text-xs font-semibold text-emerald-700">Target Sapi Utuh</span>
+              <div id="patungan-full-cow-target" class="text-base sm:text-xl font-extrabold text-slate-900 mt-0.5">Rp 21.000.000</div>
+              <span class="text-[10px] sm:text-[11px] text-slate-500">7 x <span id="patungan-per-share-target">Rp 3.000.000</span></span>
+            </div>
+
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-gold-50/80 border border-gold-200/80">
+              <span class="text-[11px] sm:text-xs font-semibold text-gold-700">Total Terkumpul</span>
+              <div id="patungan-total-collected" class="text-base sm:text-xl font-extrabold text-emerald-800 mt-0.5">Rp 0</div>
+              <span id="patungan-pct-label" class="text-[10px] sm:text-[11px] text-slate-600">0% dari sapi</span>
+            </div>
+
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <span class="text-[11px] sm:text-xs font-semibold text-slate-600">Peserta Lunas</span>
+              <div id="patungan-slot-summary" class="text-base sm:text-xl font-extrabold text-slate-900 mt-0.5">0 / 7 Slot</div>
+              <span id="patungan-paid-count" class="text-[10px] sm:text-[11px] text-emerald-700 font-semibold">0 lunas</span>
+            </div>
+
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <span class="text-[11px] sm:text-xs font-semibold text-slate-600">Sisa Kekurangan</span>
+              <div id="patungan-remaining" class="text-base sm:text-xl font-extrabold text-amber-600 mt-0.5">Rp 21.000.000</div>
+              <span class="text-[10px] sm:text-[11px] text-slate-500">Total grup</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar Grup Sapi -->
+          <div class="mb-6">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-emerald-800">Progres Pendanaan 1 Ekor Sapi</span>
+              <span id="patungan-bar-pct" class="text-gold-600">0%</span>
+            </div>
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+              <div id="patungan-progress-bar" class="h-full bg-gradient-to-r from-emerald-600 to-gold-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Grid 7 Slot Peserta: 1 Kolom HP, 2 Kolom Tablet, 4 Kolom Laptop/Desktop -->
+          <div id="patungan-slots-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Di-render via JS -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== 5. PANDUAN & FIQIH QURBAN ==================== -->
+      <section id="panduan-qurban" class="scroll-mt-20 space-y-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-gold-600">Bekal Ilmu & Syariat</span>
+          <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+            Panduan & Ketentuan Qurban
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+          
+          <!-- Syarat Hewan -->
+          <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80 space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <h3 class="font-bold text-base sm:text-lg text-slate-900">Ketentuan Syariat & Umur Hewan</h3>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-600 mt-1 shrink-0"></i>
+                <span><strong>Kambing / Domba:</strong> Minimal berumur 1 tahun dan berlaku untuk <strong>1 orang</strong>.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-600 mt-1 shrink-0"></i>
+                <span><strong>Sapi / Kerbau:</strong> Minimal berumur 2 tahun dan sah untuk <strong>patungan hingga 7 orang</strong>.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="fa-solid fa-check text-emerald-600 mt-1 shrink-0"></i>
+                <span><strong>Kondisi Fisik:</strong> Sehat, tidak pincang, tidak buta, dan tidak sangat kurus.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pembagian Daging -->
+          <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-slate-200/80 space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gold-100 text-gold-600 flex items-center justify-center text-lg shrink-0">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+              </div>
+              <h3 class="font-bold text-base sm:text-lg text-slate-900">Anjuran Pembagian Daging Qurban</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Para ulama menganjurkan pembagian daging qurban secara proporsional:
+            </p>
+            <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-emerald-50 border border-emerald-100">
+                <span class="block text-base sm:text-lg font-extrabold text-emerald-800">1/3</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-600">Shohibul Qurban</span>
+              </div>
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-gold-50 border border-gold-200">
+                <span class="block text-base sm:text-lg font-extrabold text-gold-700">1/3</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-600">Tetangga / Kerabat</span>
+              </div>
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                <span class="block text-base sm:text-lg font-extrabold text-slate-800">1/3</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-600">Faqir Miskin</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="bg-emerald-950 text-emerald-200/80 py-12 border-t border-emerald-900 no-print">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-emerald-900"
-        >
+    <footer class="bg-emerald-950 text-emerald-100 border-t border-emerald-900 mt-12 sm:mt-16 no-print shrink-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900 text-center sm:text-left">
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-gold-400"
-            >
-              <i class="fa-solid fa-kaaba text-lg"></i>
+            <div class="w-9 h-9 rounded-xl bg-emerald-900 border border-emerald-700 flex items-center justify-center text-gold-400 shrink-0">
+              <i class="fa-solid fa-kaaba"></i>
             </div>
             <div>
-              <span class="font-extrabold text-xl text-white"
-                >Qurban<span class="text-gold-400">Ku</span></span
-              >
-              <p class="text-xs text-emerald-300">
-                Aplikasi Perencana & Tracker Tabungan Qurban Indonesia
-              </p>
+              <span class="font-extrabold text-base text-white">Qurban<span class="text-gold-400">Ku</span></span>
+              <p class="text-xs text-emerald-300">Aplikasi Perencana & Tracker Tabungan Qurban</p>
             </div>
           </div>
-          <div class="flex items-center gap-6 text-sm">
-            <a href="#pilih-hewan" class="hover:text-white transition"
-              >Target Hewan</a
-            >
-            <a href="#tracker-tabungan" class="hover:text-white transition"
-              >Tracker</a
-            >
-            <a href="#patungan-sapi" class="hover:text-white transition"
-              >Patungan Sapi</a
-            >
-            <a href="#panduan-qurban" class="hover:text-white transition"
-              >Panduan</a
-            >
-          </div>
+          <p class="text-xs text-emerald-400">Data Anda tersimpan secara lokal di browser ini.</p>
         </div>
-        <div
-          class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs text-emerald-400"
-        >
-          <p>
-            © 2027 QurbanKu. Niatkan ibadah ikhlas karena Allah SWT.
-          </p>
-          <p class="flex items-center gap-1">
-            Dibuat dengan <i class="fa-solid fa-heart text-rose-500"></i> untuk
-            Keluarga & Jamaah Indonesia
-          </p>
+        <div class="pt-4 text-center text-xs text-emerald-500">
+          QurbanKu &copy; 1448 H / 2027 • Responsif & Amanah
         </div>
       </div>
     </footer>
 
     <!-- ==================== JAVASCRIPT APLIKASI ==================== -->
     <script>
-      let appData = {
-        targetDate: "2027-05-17",
-        activeAnimalId: "sapi-1-7",
-        animals: [
-          {
-            id: "kambing",
-            name: "Kambing / Domba",
-            price: 2900000,
-            icon: "fa-sheep",
-            badge: "Pilihan Mandiri",
-            desc: "Estimasi bobot ± 26–30 kg. Cocok untuk qurban 1 orang.",
-          },
-          {
-            id: "sapi-1-7",
-            name: "Sapi 1/7 (Patungan)",
-            price: 3000000,
-            icon: "fa-cow",
-            badge: "Paling Diminati",
-            desc: "Estimasi bobot ± 250–300 kg dibagi 7 orang jamaah.",
-          },
-        ],
-        deposits: [
-          {
-            id: "dep-1",
-            date: "2026-06-01",
-            name: "Ahmad Fauzi",
-            amount: 500000,
-            method: "Transfer Bank",
-            note: "Setoran Awal Bulan",
-          },
-          {
-            id: "dep-2",
-            date: "2026-07-01",
-            name: "Siti Aminah",
-            amount: 750000,
-            method: "E-Wallet / QRIS",
-            note: "Cicilan ke-2",
-          },
-        ],
-        participants: [
-          {
-            id: "p-1",
-            name: "Ahmad Fauzi",
-            paid: 3000000,
-            target: 3000000,
-            note: "Lunas",
-          },
-          {
-            id: "p-2",
-            name: "Siti Aminah",
-            paid: 2500000,
-            target: 3000000,
-            note: "Kurang 500rb",
-          },
-          {
-            id: "p-3",
-            name: "Budi Santoso",
-            paid: 1500000,
-            target: 3000000,
-            note: "Cicilan 3",
-          },
-          {
-            id: "p-4",
-            name: "Dewi Lestari",
-            paid: 3000000,
-            target: 3000000,
-            note: "Lunas",
-          },
-          {
-            id: "p-5",
-            name: "Eko Prasetyo",
-            paid: 1000000,
-            target: 3000000,
-            note: "Cicilan 2",
-          },
-          {
-            id: "p-6",
-            name: "Fatimah Zahra",
-            paid: 2000000,
-            target: 3000000,
-            note: "Cicilan 4",
-          },
-          {
-            id: "p-7",
-            name: "Hendra Gunawan",
-            paid: 500000,
-            target: 3000000,
-            note: "Cicilan 1",
-          },
-        ],
-      };
+      const STORAGE_KEY = "qurbanku_state_v2";
 
-      let savingsChartInstance = null;
-      let chartMode = "tx"; // 'tx' atau 'day'
-      let isChartZoomed = false;
+      // Katalog Pilihan Hewan Default (4 Opsi Responsif)
+      const DEFAULT_ANIMALS = [
+        {
+          id: "sapi-1-7",
+          name: "Sapi 1/7 (Patungan)",
+          subtitle: "1 bagian dari 7 orang • Ringan",
+          icon: "fa-cow",
+          badge: "Patungan 1/7",
+          targetPrice: 3000000,
+        },
+        {
+          id: "kambing-std",
+          name: "Kambing / Domba Standard",
+          subtitle: "Qurban mandiri 1 orang • Umur ≥ 1 thn",
+          icon: "fa-horse-head",
+          badge: "Mandiri Standard",
+          targetPrice: 2500000,
+        },
+        {
+          id: "kambing-prem",
+          name: "Kambing / Domba Premium",
+          subtitle: "Qurban mandiri bobot besar ≥ 35kg",
+          icon: "fa-horse-head",
+          badge: "Mandiri Premium",
+          targetPrice: 3500000,
+        },
+        {
+          id: "sapi-utuh",
+          name: "Sapi Utuh (1 Ekor)",
+          subtitle: "Qurban 1 ekor penuh • Keluarga",
+          icon: "fa-cow",
+          badge: "1 Ekor Penuh",
+          targetPrice: 21000000,
+        },
+      ];
 
-      document.addEventListener("DOMContentLoaded", () => {
-        loadFromLocalStorage();
-        document.getElementById("target-date-input").value = appData.targetDate;
-        document.getElementById("deposit-date").valueAsDate = new Date();
-        initCountdown();
-        renderAll();
-      });
-
-      function saveToLocalStorage() {
-        localStorage.setItem("qurbanku_data_v4", JSON.stringify(appData));
+      function createDefaultPatungan(sharePrice = 3000000) {
+        return [
+          { id: 1, name: "Ahmad Fauzi (Anda)", paidAmount: 1800000, targetAmount: sharePrice, note: "Cicilan 3x" },
+          { id: 2, name: "Siti Rahmawati", paidAmount: sharePrice, targetAmount: sharePrice, note: "Lunas transfer" },
+          { id: 3, name: "Budi Santoso", paidAmount: 2250000, targetAmount: sharePrice, note: "Kurang 750rb" },
+          { id: 4, name: "Hendra Wijaya", paidAmount: 1500000, targetAmount: sharePrice, note: "Setoran awal" },
+          { id: 5, name: "Nurul Hidayah", paidAmount: sharePrice, targetAmount: sharePrice, note: "Lunas" },
+          { id: 6, name: "Rizky Pratama", paidAmount: 900000, targetAmount: sharePrice, note: "Cicilan pekan 1" },
+          { id: 7, name: "Slot Terbuka #7", paidAmount: 0, targetAmount: sharePrice, note: "Menunggu peserta" },
+        ];
       }
 
-      function loadFromLocalStorage() {
-        const saved = localStorage.getItem("qurbanku_data_v4");
-        if (saved) {
-          try {
-            appData = JSON.parse(saved);
-          } catch (e) {
-            console.error("Gagal parse localStorage", e);
+      function createDemoState() {
+        const today = new Date();
+        const fmt = (daysAgo) => {
+          const d = new Date(today.getTime() - daysAgo * 86400000);
+          return d.toISOString().split("T")[0];
+        };
+
+        return {
+          targetDate: "2027-05-17",
+          selectedAnimalId: "sapi-1-7",
+          animals: DEFAULT_ANIMALS.map((a) => ({ ...a })),
+          deposits: [
+            { id: "dep-1", amount: 500000, date: fmt(45), method: "Transfer Bank (BSI)", note: "Niat setoran perdana qurban" },
+            { id: "dep-2", amount: 350000, date: fmt(30), method: "Autodebet / Gajian", note: "Alokasi gajian bulan lalu" },
+            { id: "dep-3", amount: 450000, date: fmt(15), method: "E-Wallet / QRIS", note: "Setoran tengah bulan" },
+            { id: "dep-4", amount: 400000, date: fmt(3), method: "Transfer Bank (BSI)", note: "Setoran pekan ini" },
+          ],
+          patungan: createDefaultPatungan(3000000),
+        };
+      }
+
+      let appState = loadState();
+      let savingsChartInstance = null;
+      let countdownInterval = null;
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return createDemoState();
+          const parsed = JSON.parse(raw);
+          if (!parsed || !Array.isArray(parsed.animals) || !Array.isArray(parsed.deposits)) {
+            return createDemoState();
           }
+          if (!Array.isArray(parsed.patungan) || parsed.patungan.length === 0) {
+            parsed.patungan = createDefaultPatungan(3000000);
+          }
+          return parsed;
+        } catch (err) {
+          console.error("Gagal memuat state:", err);
+          return createDemoState();
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        } catch (err) {
+          console.error("Gagal menyimpan state:", err);
+          showToast("Gagal menyimpan data ke penyimpanan lokal.", "error");
         }
       }
 
       function formatRupiah(num) {
-        return "Rp " + Number(num).toLocaleString("id-ID");
+        const val = Number.isFinite(Number(num)) ? Math.round(Number(num)) : 0;
+        return "Rp " + val.toLocaleString("id-ID");
       }
 
+      function formatDateID(dateStr) {
+        if (!dateStr) return "-";
+        const parts = dateStr.split("-");
+        if (parts.length !== 3) return dateStr;
+        const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        if (Number.isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+      }
+
+      function escapeHTML(str) {
+        return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+
+      // Mobile Menu Drawer Handler
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobile-menu");
+        const icon = document.getElementById("mobile-menu-icon");
+        if (!menu) return;
+        const isHidden = menu.classList.contains("hidden");
+        if (isHidden) {
+          menu.classList.remove("hidden");
+          if (icon) icon.className = "fa-solid fa-xmark text-lg";
+        } else {
+          menu.classList.add("hidden");
+          if (icon) icon.className = "fa-solid fa-bars text-lg";
+        }
+      }
+
+      // Toast Notification
       function showToast(message, type = "success") {
         const container = document.getElementById("toast-container");
-        const toast = document.createElement("div");
-        const bg = type === "success" ? "bg-emerald-800 text-white" : "bg-rose-700 text-white";
-        const icon = type === "success" ? "fa-circle-check text-gold-400" : "fa-circle-exclamation text-white";
+        if (!container) return;
 
-        toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border border-white/10 text-sm font-semibold transition-all transform translate-y-2 opacity-0 ${bg}`;
-        toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span>${message}</span>`;
+        const styles = {
+          success: "bg-emerald-900 text-white border-emerald-600",
+          error: "bg-rose-800 text-white border-rose-600",
+          info: "bg-slate-900 text-white border-slate-700",
+        };
+        const icons = {
+          success: "fa-circle-check text-gold-400",
+          error: "fa-circle-xmark text-rose-300",
+          info: "fa-circle-info text-emerald-300",
+        };
+
+        const toast = document.createElement("div");
+        toast.className = `toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-xl text-xs sm:text-sm font-semibold ${styles[type] || styles.success}`;
+        toast.innerHTML = `
+          <i class="fa-solid ${icons[type] || icons.success} text-base shrink-0"></i>
+          <span class="flex-1">${escapeHTML(message)}</span>
+        `;
+
         container.appendChild(toast);
 
         setTimeout(() => {
-          toast.classList.remove("translate-y-2", "opacity-0");
-        }, 10);
-
-        setTimeout(() => {
-          toast.classList.add("translate-y-2", "opacity-0");
-          setTimeout(() => toast.remove(), 300);
-        }, 3500);
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(-10px)";
+          toast.style.transition = "all 0.2s ease";
+          setTimeout(() => toast.remove(), 210);
+        }, 3000);
       }
 
-      let confirmCallback = null;
-      function showConfirm(title, message, callback) {
-        document.getElementById("confirm-title").innerText = title;
-        document.getElementById("confirm-message").innerText = message;
-        confirmCallback = callback;
+      // Modal Confirmation
+      function showConfirmModal({ title = "Konfirmasi Tindakan", message = "Apakah Anda yakin?", okText = "Ya, Lanjutkan", onConfirm = () => {} }) {
         const modal = document.getElementById("confirm-modal");
         const box = document.getElementById("confirm-modal-box");
+        const titleEl = document.getElementById("confirm-title");
+        const msgEl = document.getElementById("confirm-message");
+        const okBtn = document.getElementById("confirm-ok-btn");
+        const cancelBtn = document.getElementById("confirm-cancel-btn");
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        okBtn.textContent = okText;
+
         modal.classList.remove("hidden");
         modal.classList.add("flex");
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           box.classList.remove("scale-95", "opacity-0");
           box.classList.add("scale-100", "opacity-100");
-        }, 10);
+        });
+
+        const cleanup = () => {
+          box.classList.remove("scale-100", "opacity-100");
+          box.classList.add("scale-95", "opacity-0");
+          setTimeout(() => {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+          }, 150);
+          okBtn.removeEventListener("click", handleOk);
+          cancelBtn.removeEventListener("click", handleCancel);
+        };
+
+        const handleOk = () => { cleanup(); onConfirm(); };
+        const handleCancel = () => cleanup();
+
+        okBtn.addEventListener("click", handleOk);
+        cancelBtn.addEventListener("click", handleCancel);
       }
 
-      document.getElementById("confirm-cancel-btn").addEventListener("click", () => {
-        const modal = document.getElementById("confirm-modal");
-        const box = document.getElementById("confirm-modal-box");
-        box.classList.remove("scale-100", "opacity-100");
-        box.classList.add("scale-95", "opacity-0");
-        setTimeout(() => {
-          modal.classList.remove("flex");
-          modal.classList.add("hidden");
-          confirmCallback = null;
-        }, 200);
-      });
+      function getActiveAnimal() {
+        return appState.animals.find((a) => a.id === appState.selectedAnimalId) || appState.animals[0];
+      }
 
-      document.getElementById("confirm-ok-btn").addEventListener("click", () => {
-        if (confirmCallback) confirmCallback();
-        document.getElementById("confirm-cancel-btn").click();
-      });
+      function getTotalSaved() {
+        return appState.deposits.reduce((sum, d) => sum + (Number(d.amount) || 0), 0);
+      }
 
-      let countdownInterval = null;
-      function initCountdown() {
-        if (countdownInterval) clearInterval(countdownInterval);
-        
-        function updateTimer() {
-          const targetDate = new Date(appData.targetDate + "T00:00:00").getTime();
-          const now = new Date().getTime();
-          const distance = targetDate - now;
+      function getDaysRemaining() {
+        const target = new Date(appState.targetDate + "T00:00:00");
+        const now = new Date();
+        const diffMs = target.getTime() - now.getTime();
+        if (Number.isNaN(diffMs) || diffMs <= 0) return 1;
+        return Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      }
 
-          if (distance < 0) {
-            document.getElementById("cd-days").innerText = "000";
-            document.getElementById("cd-hours").innerText = "00";
-            document.getElementById("cd-minutes").innerText = "00";
-            document.getElementById("cd-seconds").innerText = "00";
-            return;
-          }
-
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-          document.getElementById("cd-days").innerText = String(days).padStart(3, "0");
-          document.getElementById("cd-hours").innerText = String(hours).padStart(2, "0");
-          document.getElementById("cd-minutes").innerText = String(minutes).padStart(2, "0");
-          document.getElementById("cd-seconds").innerText = String(seconds).padStart(2, "0");
+      function updateCountdown() {
+        const inputEl = document.getElementById("target-date-input");
+        const displayEl = document.getElementById("target-date-display");
+        if (inputEl && inputEl.value !== appState.targetDate) {
+          inputEl.value = appState.targetDate;
+        }
+        if (displayEl) {
+          displayEl.textContent = formatDateID(appState.targetDate);
         }
 
-        updateTimer();
-        countdownInterval = setInterval(updateTimer, 1000);
+        const target = new Date(appState.targetDate + "T00:00:00").getTime();
+        const dist = Math.max(0, target - Date.now());
+
+        const days = Math.floor(dist / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((dist % (1000 * 60)) / 1000);
+
+        const setText = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val;
+        };
+        setText("cd-days", String(days).padStart(3, "0"));
+        setText("cd-hours", String(hours).padStart(2, "0"));
+        setText("cd-minutes", String(minutes).padStart(2, "0"));
+        setText("cd-seconds", String(seconds).padStart(2, "0"));
       }
 
       function updateTargetDate(val) {
-        appData.targetDate = val;
-        saveToLocalStorage();
-        initCountdown();
-        renderAll();
-        showToast("Estimasi tanggal Idul Adha diperbarui!");
+        if (!val) return;
+        appState.targetDate = val;
+        saveState();
+        updateCountdown();
+        renderCalculator();
+        showToast(`Tanggal target diubah ke ${formatDateID(val)}`, "info");
       }
 
-      function renderAll() {
-        renderAnimalCards();
-        renderHeroSummary();
-        renderCalculator();
-        renderDepositTable();
-        renderParticipants();
-        renderStockbitChart();
+      function renderHeroAndSummary() {
+        const animal = getActiveAnimal();
+        const totalSaved = getTotalSaved();
+        const targetPrice = Math.max(1, Number(animal.targetPrice) || 1);
+        const pct = Math.min(100, Math.round((totalSaved / targetPrice) * 100));
+        const remaining = Math.max(0, targetPrice - totalSaved);
+
+        document.getElementById("hero-animal-name").textContent = animal.name;
+        const iconEl = document.getElementById("hero-animal-icon");
+        if (iconEl) iconEl.className = `fa-solid ${animal.icon}`;
+
+        document.getElementById("hero-total-saved").textContent = formatRupiah(totalSaved);
+        document.getElementById("hero-target-price").textContent = formatRupiah(targetPrice);
+        document.getElementById("hero-progress-pct").textContent = `${pct}% Tercapai`;
+        document.getElementById("hero-remaining-text").textContent =
+          remaining === 0 ? "Target Terpenuhi! Alhamdulillah" : `Kurang ${formatRupiah(remaining)}`;
+        document.getElementById("hero-progress-bar").style.width = `${pct}%`;
+
+        document.getElementById("quick-active-animal-label").textContent = animal.name;
+        const quickInput = document.getElementById("quick-active-price-input");
+        if (quickInput && document.activeElement !== quickInput) {
+          quickInput.value = animal.targetPrice;
+        }
       }
 
       function renderAnimalCards() {
         const container = document.getElementById("animal-cards-container");
-        container.innerHTML = "";
+        if (!container) return;
 
-        appData.animals.forEach((animal) => {
-          const isActive = animal.id === appData.activeAnimalId;
-          const borderClass = isActive
-            ? "border-2 border-emerald-600 bg-emerald-50/40 shadow-lg ring-2 ring-emerald-500/20"
-            : "border border-slate-200 bg-white hover:border-emerald-300 shadow-sm";
-
-          container.innerHTML += `
-            <div class="rounded-3xl p-6 transition-all duration-300 relative flex flex-col justify-between ${borderClass}">
-              <div>
-                <div class="flex items-center justify-between mb-4">
-                  <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full ${isActive ? 'bg-emerald-700 text-white' : 'bg-slate-100 text-slate-600'}">
-                    ${animal.badge}
-                  </span>
-                  <div class="w-12 h-12 rounded-2xl ${isActive ? 'bg-emerald-700 text-gold-300' : 'bg-gold-100 text-gold-600'} flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid ${animal.icon}"></i>
+        container.innerHTML = appState.animals
+          .map((animal) => {
+            const isSelected = animal.id === appState.selectedAnimalId;
+            return `
+              <div
+                onclick="selectAnimal('${animal.id}')"
+                class="cursor-pointer rounded-2xl p-4 sm:p-5 transition-all border-2 ${
+                  isSelected
+                    ? "bg-white border-emerald-600 shadow-md ring-2 ring-emerald-500/20"
+                    : "bg-white/90 border-slate-200 hover:border-emerald-300 shadow-sm"
+                }"
+              >
+                <div class="flex items-start justify-between gap-2 mb-3">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
+                      isSelected ? "bg-emerald-700 text-gold-400 shadow-md" : "bg-emerald-50 text-emerald-700"
+                    }">
+                      <i class="fa-solid ${animal.icon}"></i>
+                    </div>
+                    <div>
+                      <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                        isSelected ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                      }">${escapeHTML(animal.badge)}</span>
+                      <h3 class="font-bold text-xs sm:text-sm text-slate-900 mt-0.5">${escapeHTML(animal.name)}</h3>
+                    </div>
                   </div>
-                </div>
-                <h3 class="text-xl font-extrabold text-slate-900">${animal.name}</h3>
-                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${animal.desc}</p>
-              </div>
-
-              <div class="mt-6 pt-4 border-t border-slate-200/60 flex items-center justify-between gap-3">
-                <div>
-                  <span class="text-[11px] text-slate-400 font-semibold block">Target Harga</span>
-                  <span class="text-xl font-extrabold text-emerald-800">${formatRupiah(animal.price)}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button type="button" onclick="promptEditAnimalPrice('${animal.id}')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
-                    <i class="fa-solid fa-pen mr-1"></i> Ubah
-                  </button>
                   ${
-                    isActive
-                      ? `<span class="px-3 py-2 rounded-xl bg-emerald-700 text-white text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> Aktif</span>`
-                      : `<button type="button" onclick="setActiveAnimal('${animal.id}')" class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition">Pilih</button>`
+                    isSelected
+                      ? `<span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-check"></i></span>`
+                      : `<span class="w-6 h-6 rounded-full border border-slate-300 shrink-0"></span>`
                   }
                 </div>
+
+                <p class="text-[11px] text-slate-500 mb-3 leading-snug">${escapeHTML(animal.subtitle)}</p>
+
+                <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-[11px] font-medium text-slate-500">Estimasi</span>
+                  <span class="text-sm font-extrabold text-emerald-800">${formatRupiah(animal.targetPrice)}</span>
+                </div>
               </div>
-            </div>
-          `;
-        });
+            `;
+          })
+          .join("");
       }
 
-      function setActiveAnimal(id) {
-        appData.activeAnimalId = id;
-        saveToLocalStorage();
+      function selectAnimal(id) {
+        if (!appState.animals.some((a) => a.id === id)) return;
+        appState.selectedAnimalId = id;
+        saveState();
         renderAll();
-        const active = appData.animals.find((a) => a.id === id);
-        showToast(`Target aktif diubah ke: ${active.name}`);
-      }
-
-      function promptEditAnimalPrice(id) {
-        const animal = appData.animals.find((a) => a.id === id);
-        const newPriceStr = prompt(`Masukkan target harga baru untuk ${animal.name}:`, animal.price);
-        if (newPriceStr !== null) {
-          const newPrice = parseInt(newPriceStr);
-          if (!isNaN(newPrice) && newPrice > 0) {
-            animal.price = newPrice;
-            saveToLocalStorage();
-            renderAll();
-            showToast(`Harga ${animal.name} berhasil diperbarui!`);
-          } else {
-            showToast("Nominal harga tidak valid.", "error");
-          }
-        }
+        const chosen = getActiveAnimal();
+        showToast(`Target aktif: ${chosen.name}`, "info");
       }
 
       function openQuickTargetEdit() {
-        const active = appData.animals.find((a) => a.id === appData.activeAnimalId);
-        document.getElementById("quick-active-animal-label").innerText = active.name;
-        document.getElementById("quick-active-price-input").value = active.price;
-        document.getElementById("quick-target-panel").scrollIntoView({ behavior: "smooth", block: "center" });
-        document.getElementById("quick-active-price-input").focus();
+        const panel = document.getElementById("quick-target-panel");
+        const input = document.getElementById("quick-active-price-input");
+        if (panel) panel.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (input) {
+          setTimeout(() => { input.focus(); input.select(); }, 300);
+        }
       }
 
       function applyQuickActivePrice() {
-        const val = parseInt(document.getElementById("quick-active-price-input").value);
-        if (isNaN(val) || val <= 0) {
-          showToast("Masukkan nominal harga yang valid.", "error");
+        const input = document.getElementById("quick-active-price-input");
+        const newPrice = Number(input.value);
+        if (!newPrice || newPrice < 100000) {
+          showToast("Masukkan target minimal Rp 100.000.", "error");
           return;
         }
-        const active = appData.animals.find((a) => a.id === appData.activeAnimalId);
-        active.price = val;
-        saveToLocalStorage();
+        const animal = getActiveAnimal();
+        animal.targetPrice = Math.round(newPrice);
+        saveState();
         renderAll();
-        showToast(`Target harga ${active.name} diperbarui ke ${formatRupiah(val)}`);
-      }
-
-      function getTotalSaved() {
-        return appData.deposits.reduce((acc, curr) => acc + curr.amount, 0);
-      }
-
-      function getActiveAnimal() {
-        return appData.animals.find((a) => a.id === appData.activeAnimalId) || appData.animals[0];
-      }
-
-      function renderHeroSummary() {
-        const active = getActiveAnimal();
-        const total = getTotalSaved();
-        const target = active.price;
-        const pct = target > 0 ? Math.min(100, Math.round((total / target) * 100)) : 0;
-        const remaining = Math.max(0, target - total);
-
-        document.getElementById("hero-animal-name").innerText = active.name;
-        document.getElementById("hero-animal-icon").className = `fa-solid ${active.icon}`;
-        document.getElementById("hero-total-saved").innerText = formatRupiah(total);
-        document.getElementById("hero-target-price").innerText = formatRupiah(target);
-        document.getElementById("hero-progress-pct").innerText = `${pct}% Tercapai`;
-        document.getElementById("hero-remaining-text").innerText = remaining > 0 ? `Kurang ${formatRupiah(remaining)}` : "Target Lunas! Alhamdulillah 🎉";
-        document.getElementById("hero-progress-bar").style.width = `${pct}%`;
+        showToast(`Target ${animal.name} diperbarui ke ${formatRupiah(animal.targetPrice)}`, "success");
       }
 
       function renderCalculator() {
-        const active = getActiveAnimal();
-        const total = getTotalSaved();
-        const target = active.price;
-        const remaining = Math.max(0, target - total);
+        const animal = getActiveAnimal();
+        const totalSaved = getTotalSaved();
+        const remaining = Math.max(0, (Number(animal.targetPrice) || 0) - totalSaved);
+        const daysLeft = getDaysRemaining();
+        const weeksLeft = Math.max(1, Math.ceil(daysLeft / 7));
+        const monthsLeft = Math.max(1, Math.ceil(daysLeft / 30));
 
-        const targetDate = new Date(appData.targetDate + "T00:00:00").getTime();
-        const now = new Date().getTime();
-        const diffDays = Math.max(1, Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24)));
-        const diffWeeks = Math.max(1, Math.ceil(diffDays / 7));
-        const diffMonths = Math.max(1, Math.ceil(diffDays / 30));
+        const daily = remaining > 0 ? Math.ceil(remaining / daysLeft) : 0;
+        const weekly = remaining > 0 ? Math.ceil(remaining / weeksLeft) : 0;
+        const monthly = remaining > 0 ? Math.ceil(remaining / monthsLeft) : 0;
 
-        const dailyPlan = Math.ceil(remaining / diffDays);
-        const weeklyPlan = Math.ceil(remaining / diffWeeks);
-        const monthlyPlan = Math.ceil(remaining / diffMonths);
+        document.getElementById("calc-remaining-label").textContent = formatRupiah(remaining);
+        document.getElementById("calc-days-left-label").textContent = `${daysLeft} hari`;
 
-        document.getElementById("calc-remaining-label").innerText = formatRupiah(remaining);
-        document.getElementById("calc-days-left-label").innerText = `${diffDays} hari`;
-        document.getElementById("calc-status-badge").innerText = remaining === 0 ? "Target Selesai" : "Sedang Berjalan";
+        const badge = document.getElementById("calc-status-badge");
+        if (remaining === 0) {
+          badge.textContent = "Target Tercapai (100%)";
+          badge.className = "font-bold text-xs text-emerald-300";
+        } else {
+          badge.textContent = `Kurang ${formatRupiah(remaining)}`;
+          badge.className = "font-bold text-xs text-gold-400";
+        }
 
-        document.getElementById("plan-daily").innerText = formatRupiah(dailyPlan);
-        document.getElementById("plan-days-count").innerText = diffDays;
+        document.getElementById("plan-daily").textContent = formatRupiah(daily);
+        document.getElementById("plan-weekly").textContent = formatRupiah(weekly);
+        document.getElementById("plan-monthly").textContent = formatRupiah(monthly);
 
-        document.getElementById("plan-weekly").innerText = formatRupiah(weeklyPlan);
-        document.getElementById("plan-weeks-count").innerText = diffWeeks;
+        document.getElementById("plan-days-count").textContent = daysLeft;
+        document.getElementById("plan-weeks-count").textContent = weeksLeft;
+        document.getElementById("plan-months-count").textContent = monthsLeft;
 
-        document.getElementById("plan-monthly").innerText = formatRupiah(monthlyPlan);
-        document.getElementById("plan-months-count").innerText = diffMonths;
+        window.__qurbanPlanAmounts = { daily, weekly, monthly };
       }
 
       function quickFillDeposit(type) {
-        const active = getActiveAnimal();
-        const total = getTotalSaved();
-        const remaining = Math.max(0, active.price - total);
-        const targetDate = new Date(appData.targetDate + "T00:00:00").getTime();
-        const now = new Date().getTime();
-        const diffDays = Math.max(1, Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24)));
-        const diffWeeks = Math.max(1, Math.ceil(diffDays / 7));
-        const diffMonths = Math.max(1, Math.ceil(diffDays / 30));
-
-        let val = 50000;
-        if (type === "daily") val = Math.ceil(remaining / diffDays);
-        if (type === "weekly") val = Math.ceil(remaining / diffWeeks);
-        if (type === "monthly") val = Math.ceil(remaining / diffMonths);
-
-        document.getElementById("deposit-amount").value = val;
-        document.getElementById("deposit-form").scrollIntoView({ behavior: "smooth", block: "center" });
-        showToast(`Nominal ${formatRupiah(val)} dimasukkan ke form setoran!`);
+        const plans = window.__qurbanPlanAmounts || { daily: 10000, weekly: 70000, monthly: 300000 };
+        const amt = plans[type] || 50000;
+        const input = document.getElementById("deposit-amount");
+        if (input) {
+          input.value = amt > 0 ? amt : 50000;
+          input.scrollIntoView({ behavior: "smooth", block: "center" });
+          input.focus();
+          showToast(`Nominal ${formatRupiah(input.value)} diisikan ke form.`, "info");
+        }
       }
 
       function focusDepositInput() {
-        document.getElementById("deposit-name").focus();
-      }
-
-      function addQuickNominal(amt) {
         const input = document.getElementById("deposit-amount");
-        const current = parseInt(input.value) || 0;
-        input.value = current + amt;
+        if (input) setTimeout(() => input.focus(), 250);
       }
 
-      function handleAddDeposit(e) {
-        e.preventDefault();
-        const name = document.getElementById("deposit-name").value.trim();
-        const amount = parseInt(document.getElementById("deposit-amount").value);
-        const method = document.getElementById("deposit-method").value;
-        const date = document.getElementById("deposit-date").value;
-        const note = document.getElementById("deposit-note").value.trim();
+      function setPresetAmount(val) {
+        const input = document.getElementById("deposit-amount");
+        if (!input) return;
+        const current = Number(input.value) || 0;
+        input.value = current + val;
+        input.focus();
+      }
 
-        if (!name || isNaN(amount) || amount <= 0 || !date) {
-          showToast("Mohon isi nama dan nominal setoran dengan benar.", "error");
+      function copyBankAccount() {
+        const numEl = document.getElementById("bank-account-number");
+        const btnText = document.getElementById("copy-rekening-text");
+        if (!numEl) return;
+        const accountNo = numEl.textContent.trim();
+
+        const onCopied = () => {
+          showToast(`Rekening ${accountNo} disalin!`, "success");
+          if (btnText) {
+            const prev = btnText.textContent;
+            btnText.textContent = "Tersalin";
+            setTimeout(() => { btnText.textContent = prev; }, 1800);
+          }
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(accountNo).then(onCopied).catch(() => fallbackCopy(accountNo, onCopied));
+        } else {
+          fallbackCopy(accountNo, onCopied);
+        }
+      }
+
+      function fallbackCopy(text, cb) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          if (cb) cb();
+        } catch (e) {
+          showToast("Salin manual nomor rekening: " + text, "info");
+        }
+        document.body.removeChild(ta);
+      }
+
+      document.getElementById("deposit-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const amountInput = document.getElementById("deposit-amount");
+        const dateInput = document.getElementById("deposit-date");
+        const methodInput = document.getElementById("deposit-method");
+        const noteInput = document.getElementById("deposit-note");
+
+        const amount = Number(amountInput.value);
+        const date = dateInput.value;
+        const method = methodInput.value;
+        const note = noteInput.value.trim();
+
+        if (!amount || amount < 1000) {
+          showToast("Setoran minimal Rp 1.000.", "error");
+          return;
+        }
+        if (!date) {
+          showToast("Pilih tanggal setoran.", "error");
           return;
         }
 
-        const newDep = {
-          id: "dep-" + Date.now(),
+        const newDeposit = {
+          id: "dep-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+          amount: Math.round(amount),
           date,
-          name,
-          amount,
           method,
-          note: note || "Setoran Tabungan",
+          note: note || method,
         };
 
-        appData.deposits.push(newDep);
-        appData.deposits.sort((a, b) => new Date(a.date) - new Date(b.date));
-        saveToLocalStorage();
+        appState.deposits.push(newDeposit);
+        saveState();
 
-        document.getElementById("deposit-form").reset();
-        document.getElementById("deposit-date").valueAsDate = new Date();
-
+        amountInput.value = "";
+        noteInput.value = "";
         renderAll();
-        showToast(`Setoran dari ${name} sebesar ${formatRupiah(amount)} berhasil dicatat!`);
-      }
+        showToast(`Setoran ${formatRupiah(newDeposit.amount)} berhasil dicatat!`, "success");
+      });
 
-      function deleteDeposit(id) {
-        showConfirm("Hapus Setoran", "Apakah Anda yakin ingin menghapus catatan setoran ini?", () => {
-          appData.deposits = appData.deposits.filter((d) => d.id !== id);
-          saveToLocalStorage();
-          renderAll();
-          showToast("Catatan setoran dihapus.");
-        });
-      }
+      function renderDeposits() {
+        const tbody = document.getElementById("deposits-table-body");
+        const searchEl = document.getElementById("deposit-search");
+        const badgeEl = document.getElementById("chart-summary-badge");
+        if (!tbody) return;
 
-      function renderDepositTable() {
-        const tbody = document.getElementById("deposit-table-body");
-        const search = document.getElementById("search-deposit").value.toLowerCase();
-        const methodFilter = document.getElementById("filter-method").value;
+        const query = (searchEl ? searchEl.value : "").toLowerCase().trim();
+        const sorted = [...appState.deposits].sort((a, b) => b.date.localeCompare(a.date));
 
-        const filtered = appData.deposits.filter((d) => {
-          const matchSearch = d.name.toLowerCase().includes(search) || d.note.toLowerCase().includes(search);
-          const matchMethod = methodFilter === "all" || d.method === methodFilter;
-          return matchSearch && matchMethod;
-        });
+        const filtered = query
+          ? sorted.filter((d) => (d.note || "").toLowerCase().includes(query) || (d.method || "").toLowerCase().includes(query) || String(d.amount).includes(query))
+          : sorted;
+
+        if (badgeEl) badgeEl.textContent = `${appState.deposits.length} Transaksi`;
 
         if (filtered.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="6" class="text-center py-8 text-slate-400 text-sm">
-                <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i> Belum ada riwayat setoran yang cocok.
+              <td colspan="4" class="py-8 text-center text-slate-400 text-xs">
+                <i class="fa-solid fa-inbox text-2xl mb-2 block opacity-60"></i>
+                Belum ada catatan setoran yang sesuai.
               </td>
             </tr>
           `;
           return;
         }
 
-        tbody.innerHTML = "";
-        const sortedDesc = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        sortedDesc.forEach((d) => {
-          let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
-          let iconMethod = "fa-building-columns";
-          if (d.method === "E-Wallet / QRIS") {
-            badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
-            iconMethod = "fa-qrcode";
-          } else if (d.method === "Setor Tunai") {
-            badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
-            iconMethod = "fa-money-bill-wave";
-          }
-
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-50/80 transition">
-              <td class="py-3 px-4 text-xs font-semibold text-slate-600 whitespace-nowrap">${d.date}</td>
-              <td class="py-3 px-4 font-bold text-slate-900">${d.name}</td>
-              <td class="py-3 px-4 font-extrabold text-emerald-800">${formatRupiah(d.amount)}</td>
-              <td class="py-3 px-4">
-                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${badgeColor}">
-                  <i class="fa-solid ${iconMethod}"></i> ${d.method}
-                </span>
+        tbody.innerHTML = filtered
+          .map(
+            (dep) => `
+            <tr class="hover:bg-emerald-50/40 transition">
+              <td class="py-2.5 px-2 whitespace-nowrap text-xs font-semibold text-slate-600">
+                ${formatDateID(dep.date)}
               </td>
-              <td class="py-3 px-4 text-xs text-slate-500">${d.note}</td>
-              <td class="py-3 px-4 text-center no-print">
-                <button onclick="deleteDeposit('${d.id}')" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition" title="Hapus">
-                  <i class="fa-solid fa-trash-can text-xs"></i>
+              <td class="py-2.5 px-2">
+                <p class="font-semibold text-slate-800 text-xs sm:text-sm">${escapeHTML(dep.note)}</p>
+                <span class="inline-block text-[9px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md mt-0.5 border border-emerald-100">${escapeHTML(dep.method)}</span>
+              </td>
+              <td class="py-2.5 px-2 text-right whitespace-nowrap font-extrabold text-emerald-700 text-xs sm:text-sm">
+                +${formatRupiah(dep.amount)}
+              </td>
+              <td class="py-2.5 px-2 text-center whitespace-nowrap no-print">
+                <button
+                  type="button"
+                  onclick="openEditDepositModal('${dep.id}')"
+                  title="Edit Setoran"
+                  class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button
+                  type="button"
+                  onclick="confirmDeleteDeposit('${dep.id}')"
+                  title="Hapus Setoran"
+                  class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"
+                >
+                  <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
             </tr>
-          `;
+          `
+          )
+          .join("");
+      }
+
+      function openEditDepositModal(id) {
+        const dep = appState.deposits.find((d) => d.id === id);
+        if (!dep) return;
+
+        document.getElementById("edit-deposit-id").value = dep.id;
+        document.getElementById("edit-deposit-amount").value = dep.amount;
+        document.getElementById("edit-deposit-date").value = dep.date;
+        document.getElementById("edit-deposit-method").value = dep.method || "Transfer Bank (BSI)";
+        document.getElementById("edit-deposit-note").value = dep.note || "";
+
+        const modal = document.getElementById("edit-deposit-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+
+      function closeEditDepositModal() {
+        const modal = document.getElementById("edit-deposit-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+
+      document.getElementById("edit-deposit-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = document.getElementById("edit-deposit-id").value;
+        const amount = Number(document.getElementById("edit-deposit-amount").value);
+        const date = document.getElementById("edit-deposit-date").value;
+        const method = document.getElementById("edit-deposit-method").value;
+        const note = document.getElementById("edit-deposit-note").value.trim();
+
+        if (!amount || amount < 1000 || !date) {
+          showToast("Pastikan data setoran valid.", "error");
+          return;
+        }
+
+        const idx = appState.deposits.findIndex((d) => d.id === id);
+        if (idx !== -1) {
+          appState.deposits[idx] = {
+            ...appState.deposits[idx],
+            amount: Math.round(amount),
+            date,
+            method,
+            note: note || method,
+          };
+          saveState();
+          closeEditDepositModal();
+          renderAll();
+          showToast("Setoran berhasil diperbarui.", "success");
+        }
+      });
+
+      function confirmDeleteDeposit(id) {
+        const dep = appState.deposits.find((d) => d.id === id);
+        if (!dep) return;
+        showConfirmModal({
+          title: "Hapus Setoran",
+          message: `Hapus setoran sebesar ${formatRupiah(dep.amount)} (${formatDateID(dep.date)})?`,
+          okText: "Hapus",
+          onConfirm: () => {
+            appState.deposits = appState.deposits.filter((d) => d.id !== id);
+            saveState();
+            renderAll();
+            showToast("Setoran telah dihapus.", "info");
+          },
         });
       }
 
-      function copyBankAccount() {
-        const accNum = document.getElementById("bank-account-number").innerText;
-        navigator.clipboard.writeText(accNum).then(() => {
-          showToast("Nomor rekening berhasil disalin!");
+      function confirmClearAllDeposits() {
+        if (appState.deposits.length === 0) {
+          showToast("Daftar setoran sudah kosong.", "info");
+          return;
+        }
+        showConfirmModal({
+          title: "Hapus Semua Setoran",
+          message: "Seluruh riwayat setoran akan dihapus secara permanen. Lanjutkan?",
+          okText: "Hapus Semua",
+          onConfirm: () => {
+            appState.deposits = [];
+            saveState();
+            renderAll();
+            showToast("Semua riwayat setoran dihapus.", "info");
+          },
         });
       }
 
-      function setChartMode(mode) {
-        chartMode = mode;
-        document.getElementById("mode-tx-btn").className = mode === "tx" ? "px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-emerald-800 shadow-sm transition" : "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition";
-        document.getElementById("mode-day-btn").className = mode === "day" ? "px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-emerald-800 shadow-sm transition" : "px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition";
-        renderStockbitChart();
-      }
+      function renderChart() {
+        const canvas = document.getElementById("savingsChart");
+        if (!canvas || typeof Chart === "undefined") return;
 
-      function toggleChartZoom() {
-        isChartZoomed = !isChartZoomed;
-        const inner = document.getElementById("chart-inner-container");
-        const btn = document.getElementById("zoom-btn");
-        if (isChartZoomed) {
-          inner.style.minWidth = "850px";
-          btn.innerText = "Fit ⊡";
-          btn.className = "px-2.5 h-8 rounded-xl bg-emerald-700 text-white text-xs font-bold border border-emerald-800 transition";
-          showToast("Grafik diperlebar secara horizontal.");
-        } else {
-          inner.style.minWidth = "500px";
-          btn.innerText = "Geser ↔";
-          btn.className = "px-2.5 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200 transition";
-          showToast("Grafik disesuaikan ke ukuran standar.");
-        }
-        renderStockbitChart();
-      }
+        const animal = getActiveAnimal();
+        const targetVal = Number(animal.targetPrice) || 0;
 
-      function scrollChart(dir) {
-        const wrapper = document.getElementById("chart-scroll-wrapper");
-        const amount = 200;
-        if (dir === "left") {
-          wrapper.scrollBy({ left: -amount, behavior: "smooth" });
-        } else {
-          wrapper.scrollBy({ left: amount, behavior: "smooth" });
-        }
-      }
+        const sorted = [...appState.deposits].sort((a, b) => a.date.localeCompare(b.date));
 
-      function renderStockbitChart() {
-        const ctx = document.getElementById("savingsChart").getContext("2d");
-        const sortedDeps = [...appData.deposits].sort((a, b) => new Date(a.date) - new Date(b.date));
+        let runningTotal = 0;
+        const labels = ["Awal"];
+        const cumulativeData = [0];
 
-        let labels = [];
-        let dataPoints = [];
-        let subtitles = [];
+        sorted.forEach((dep) => {
+          runningTotal += Number(dep.amount) || 0;
+          labels.push(formatDateID(dep.date));
+          cumulativeData.push(runningTotal);
+        });
 
-        if (sortedDeps.length === 0) {
-          labels = ["Mulai"];
-          dataPoints = [0];
-          subtitles = ["Belum ada transaksi"];
-        } else if (chartMode === "tx") {
-          sortedDeps.forEach((d, idx) => {
-            labels.push(` #${idx + 1} (${d.date})`);
-            dataPoints.push(d.amount);
-            subtitles.push(`${d.name} (${formatRupiah(d.amount)})`);
-          });
-        } else {
-          const dayMap = {};
-          sortedDeps.forEach((d) => {
-            dayMap[d.date] = (dayMap[d.date] || 0) + d.amount;
-          });
-          const sortedDays = Object.keys(dayMap).sort((a, b) => new Date(a) - new Date(b));
-          sortedDays.forEach((date) => {
-            const amt = dayMap[date];
-            labels.push(date);
-            dataPoints.push(amt);
-            subtitles.push(`Total harian (${formatRupiah(amt)})`);
-          });
-        }
-
-        const lastAmount = dataPoints[dataPoints.length - 1];
-        document.getElementById("stockbit-price-display").innerText = formatRupiah(lastAmount);
-
-        if (sortedDeps.length > 0 && chartMode === "tx") {
-          const lastDep = sortedDeps[sortedDeps.length - 1];
-          document.getElementById("stockbit-date-label").innerText = lastDep.date;
-          document.getElementById("stockbit-desc-display").innerText = `Setoran terakhir: ${lastDep.name} (${lastDep.method}) • ${formatRupiah(lastDep.amount)}`;
-        } else {
-          document.getElementById("stockbit-date-label").innerText = "Periode";
-          document.getElementById("stockbit-desc-display").innerText = "Grafik nominal setoran qurban";
-        }
+        const targetLine = labels.map(() => targetVal);
 
         if (savingsChartInstance) {
           savingsChartInstance.destroy();
         }
 
-        const crosshairPlugin = {
-          id: 'stockbitCrosshair',
-          afterDraw: (chart) => {
-            if (chart.tooltip._active && chart.tooltip._active.length) {
-              const ctx = chart.ctx;
-              const activePoint = chart.tooltip._active[0];
-              const x = activePoint.element.x;
-              const topY = chart.scales.y.top;
-              const bottomY = chart.scales.y.bottom;
-
-              ctx.save();
-              ctx.beginPath();
-              ctx.moveTo(x, topY);
-              ctx.lineTo(x, bottomY);
-              ctx.lineWidth = 1.5;
-              ctx.strokeStyle = '#059669';
-              ctx.setLineDash([4, 4]);
-              ctx.stroke();
-              ctx.restore();
-            }
-          }
-        };
-
+        const ctx = canvas.getContext("2d");
         savingsChartInstance = new Chart(ctx, {
-          type: "bar",
+          type: "line",
           data: {
-            labels: labels,
+            labels,
             datasets: [
               {
-                label: "Nominal Setoran",
-                data: dataPoints,
-                backgroundColor: "#059669",
-                borderRadius: 8,
-                barThickness: 'flex',
-                maxBarThickness: 40,
+                label: "Akumulasi Tabungan (Rp)",
+                data: cumulativeData,
+                borderColor: "#059669",
+                backgroundColor: "rgba(16, 185, 129, 0.14)",
+                borderWidth: 3,
+                pointBackgroundColor: "#047857",
+                pointBorderColor: "#ffffff",
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                fill: true,
+                tension: 0.3,
+              },
+              {
+                label: "Target Qurban (Rp)",
+                data: targetLine,
+                borderColor: "#d97706",
+                borderDash: [6, 6],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
               },
             ],
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-              mode: "index",
-              intersect: false,
-            },
+            interaction: { mode: "index", intersect: false },
             plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: "rgba(6, 78, 59, 0.95)",
-                titleFont: { size: 13, weight: "bold", family: "'Plus Jakarta Sans', sans-serif" },
-                bodyFont: { size: 12, family: "'Plus Jakarta Sans', sans-serif" },
-                padding: 12,
-                cornerRadius: 12,
-                displayColors: false,
-                callbacks: {
-                  title: (items) => {
-                    const idx = items[0].dataIndex;
-                    return subtitles[idx] || labels[idx];
-                  },
-                  label: (context) => {
-                    const val = context.raw;
-                    return `Nominal: ${formatRupiah(val)}`;
-                  },
-                  footer: () => "Klik atau geser untuk melihat riwayat lain",
+              legend: {
+                position: "bottom",
+                labels: {
+                  usePointStyle: true,
+                  boxWidth: 8,
+                  font: { family: '"Plus Jakarta Sans", sans-serif', size: 10, weight: "600" },
                 },
+              },
+              tooltip: {
+                callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatRupiah(ctx.parsed.y)}` },
               },
             },
             scales: {
-              x: {
-                grid: { display: false },
-                ticks: { font: { size: 11, family: "'Plus Jakarta Sans'" }, color: "#64748b" },
-              },
               y: {
-                grid: { color: "rgba(226, 232, 240, 0.6)" },
+                beginAtZero: true,
                 ticks: {
-                  font: { size: 11, family: "'Plus Jakarta Sans'" },
-                  color: "#64748b",
-                  callback: (value) => {
-                    if (value >= 1000000) return (value / 1000000).toFixed(1) + "jt";
-                    if (value >= 1000) return (value / 1000) + "rb";
-                    return value;
-                  },
+                  font: { family: '"Plus Jakarta Sans", sans-serif', size: 10 },
+                  callback: (val) => (val >= 1000000 ? "Rp " + (val / 1000000).toFixed(1) + "jt" : "Rp " + val),
                 },
+                grid: { color: "rgba(148, 163, 184, 0.15)" },
+              },
+              x: {
+                ticks: { font: { family: '"Plus Jakarta Sans", sans-serif', size: 10 } },
+                grid: { display: false },
               },
             },
           },
-          plugins: [crosshairPlugin],
         });
       }
 
-      function renderParticipants() {
-        const grid = document.getElementById("participants-grid");
-        grid.innerHTML = "";
+      function renderPatungan() {
+        const grid = document.getElementById("patungan-slots-grid");
+        if (!grid) return;
 
-        let totalGroupSaved = 0;
-        let totalGroupTarget = 0;
+        const members = appState.patungan || [];
+        const totalCollected = members.reduce((sum, m) => sum + (Number(m.paidAmount) || 0), 0);
+        const totalTarget = members.reduce((sum, m) => sum + (Number(m.targetAmount) || 3000000), 0);
+        const remaining = Math.max(0, totalTarget - totalCollected);
+        const pct = totalTarget > 0 ? Math.min(100, Math.round((totalCollected / totalTarget) * 100)) : 0;
+        const paidFullCount = members.filter((m) => (Number(m.paidAmount) || 0) >= (Number(m.targetAmount) || 3000000)).length;
+        const activeSlotsCount = members.filter((m) => (Number(m.paidAmount) || 0) > 0 || !(m.name || "").toLowerCase().includes("slot terbuka")).length;
 
-        appData.participants.forEach((p, idx) => {
-          totalGroupSaved += p.paid;
-          totalGroupTarget += p.target;
-          const pct = p.target > 0 ? Math.min(100, Math.round((p.paid / p.target) * 100)) : 0;
-          const isLunas = p.paid >= p.target;
+        const sampleShare = members[0]?.targetAmount || 3000000;
+        document.getElementById("patungan-full-cow-target").textContent = formatRupiah(totalTarget || sampleShare * 7);
+        document.getElementById("patungan-per-share-target").textContent = formatRupiah(sampleShare);
+        document.getElementById("patungan-total-collected").textContent = formatRupiah(totalCollected);
+        document.getElementById("patungan-pct-label").textContent = `${pct}% dari sapi`;
+        document.getElementById("patungan-slot-summary").textContent = `${Math.min(7, activeSlotsCount)} / 7 Slot`;
+        document.getElementById("patungan-paid-count").textContent = `${paidFullCount} lunas`;
+        document.getElementById("patungan-remaining").textContent = formatRupiah(remaining);
+        document.getElementById("patungan-bar-pct").textContent = `${pct}%`;
+        document.getElementById("patungan-progress-bar").style.width = `${pct}%`;
 
-          grid.innerHTML += `
-            <div class="bg-slate-50/80 border ${isLunas ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200'} rounded-2xl p-4 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md ${isLunas ? 'bg-emerald-700 text-white' : 'bg-slate-200 text-slate-700'}">
-                    Slot #${idx + 1}
-                  </span>
-                  <div class="flex items-center gap-1 no-print">
-                    <button onclick="openEditParticipantModal('${p.id}')" class="w-7 h-7 rounded-lg bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 flex items-center justify-center text-xs transition" title="Edit">
-                      <i class="fa-solid fa-pen"></i>
+        grid.innerHTML = members
+          .map((m, idx) => {
+            const paid = Math.max(0, Number(m.paidAmount) || 0);
+            const target = Math.max(1, Number(m.targetAmount) || 3000000);
+            const mPct = Math.min(100, Math.round((paid / target) * 100));
+            const isLunas = paid >= target;
+
+            return `
+              <div class="rounded-2xl border p-3.5 sm:p-4 flex flex-col justify-between transition ${
+                isLunas ? "bg-emerald-50/60 border-emerald-300" : "bg-white border-slate-200 hover:border-emerald-300"
+              }">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Bagian #${idx + 1}</span>
+                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                      isLunas
+                        ? "bg-emerald-600 text-white"
+                        : paid > 0
+                        ? "bg-gold-100 text-gold-700 border border-gold-300"
+                        : "bg-slate-100 text-slate-500"
+                    }">${isLunas ? "LUNAS" : paid > 0 ? "MENYICIL" : "KOSONG"}</span>
+                  </div>
+
+                  <div class="mb-1.5">
+                    <label class="sr-only">Peserta #${idx + 1}</label>
+                    <input
+                      type="text"
+                      value="${escapeHTML(m.name)}"
+                      onchange="updatePatunganMember(${m.id}, 'name', this.value)"
+                      class="w-full font-bold text-xs sm:text-sm text-slate-900 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:outline-none py-0.5"
+                    />
+                  </div>
+
+                  <p class="text-[10px] sm:text-[11px] text-slate-500 mb-2.5 truncate" title="${escapeHTML(m.note || "")}">
+                    ${escapeHTML(m.note || "Catatan patungan")}
+                  </p>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                  <div class="flex justify-between text-[11px] sm:text-xs font-bold">
+                    <span class="text-emerald-800">${formatRupiah(paid)}</span>
+                    <span class="text-slate-400">/ ${formatRupiah(target)}</span>
+                  </div>
+
+                  <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full rounded-full transition-all duration-300 ${isLunas ? "bg-emerald-600" : "bg-gold-500"}"
+                      style="width: ${mPct}%"
+                    ></div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 pt-1 no-print">
+                    <button
+                      type="button"
+                      onclick="addPatunganDeposit(${m.id}, 250000)"
+                      class="flex-1 min-h-[34px] py-1 px-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200 transition"
+                    >
+                      +250rb
                     </button>
-                    <button onclick="deleteParticipant('${p.id}')" class="w-7 h-7 rounded-lg bg-white hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200 flex items-center justify-center text-xs transition" title="Hapus">
-                      <i class="fa-solid fa-trash-can"></i>
+                    <button
+                      type="button"
+                      onclick="markPatunganLunas(${m.id})"
+                      class="flex-1 min-h-[34px] py-1 px-1.5 rounded-lg bg-gold-50 hover:bg-gold-100 text-gold-800 text-[10px] font-bold border border-gold-200 transition"
+                    >
+                      Pelunasan
                     </button>
                   </div>
                 </div>
-                <h4 class="font-bold text-slate-900 text-sm truncate">${p.name}</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5 truncate">${p.note || 'Anggota Patungan'}</p>
               </div>
+            `;
+          })
+          .join("");
+      }
 
-              <div class="mt-4 pt-3 border-t border-slate-200/60 space-y-2">
-                <div class="flex justify-between text-xs">
-                  <span class="font-bold text-emerald-800">${formatRupiah(p.paid)}</span>
-                  <span class="font-semibold text-slate-400">${pct}%</span>
-                </div>
-                <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full bg-emerald-600 rounded-full" style="width: ${pct}%"></div>
-                </div>
-                <div class="text-[10px] text-slate-500 text-right">Target Porsi: ${formatRupiah(p.target)}</div>
-              </div>
-            </div>
-          `;
+      function updatePatunganMember(id, field, value) {
+        const member = appState.patungan.find((m) => m.id === id);
+        if (!member) return;
+        member[field] = value;
+        saveState();
+        renderPatungan();
+      }
+
+      function addPatunganDeposit(id, amount) {
+        const member = appState.patungan.find((m) => m.id === id);
+        if (!member) return;
+        member.paidAmount = Math.min(Number(member.targetAmount) || 3000000, (Number(member.paidAmount) || 0) + amount);
+        member.note = `Setoran +${formatRupiah(amount)}`;
+        saveState();
+        renderPatungan();
+        showToast(`Setoran ${formatRupiah(amount)} (${member.name}) tersimpan.`, "success");
+      }
+
+      function markPatunganLunas(id) {
+        const member = appState.patungan.find((m) => m.id === id);
+        if (!member) return;
+        member.paidAmount = Number(member.targetAmount) || 3000000;
+        member.note = "Lunas 100%";
+        saveState();
+        renderPatungan();
+        showToast(`${member.name} ditandai LUNAS!`, "success");
+      }
+
+      function addPatunganMember() {
+        if (appState.patungan.length >= 7) {
+          showToast("Kuota sapi 1/7 maksimal 7 orang.", "info");
+          return;
+        }
+        const sharePrice = appState.patungan[0]?.targetAmount || 3000000;
+        const nextNum = appState.patungan.length + 1;
+        appState.patungan.push({
+          id: Date.now(),
+          name: `Peserta Patungan #${nextNum}`,
+          paidAmount: 0,
+          targetAmount: sharePrice,
+          note: "Baru ditambahkan",
         });
-
-        const sapiPack = appData.animals.find((a) => a.id === "sapi-1-7");
-        const singlePortionTarget = sapiPack ? sapiPack.price : 3000000;
-        const totalOverallSapiTarget = singlePortionTarget * 7;
-
-        document.getElementById("group-total-saved").innerText = formatRupiah(totalGroupSaved);
-        document.getElementById("group-total-target").innerText = formatRupiah(totalOverallSapiTarget);
+        saveState();
+        renderPatungan();
+        showToast("Slot peserta baru ditambahkan.", "success");
       }
 
-      function openAddParticipantModal() {
-        if (appData.participants.length >= 7) {
-          showToast("Slot patungan sapi sudah penuh (maksimal 7 orang).", "error");
-          return;
-        }
-        document.getElementById("participant-modal-title").innerText = "Tambah Anggota Patungan Sapi";
-        document.getElementById("participant-form").reset();
-        document.getElementById("participant-id").value = "";
-        
-        const sapiPack = appData.animals.find((a) => a.id === "sapi-1-7");
-        const defaultTarget = sapiPack ? sapiPack.price : 3000000;
-        document.getElementById("participant-target").value = defaultTarget;
-
-        const modal = document.getElementById("participant-modal");
-        const box = document.getElementById("participant-modal-box");
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-        setTimeout(() => {
-          box.classList.remove("scale-95", "opacity-0");
-          box.classList.add("scale-100", "opacity-100");
-        }, 10);
-      }
-
-      function openEditParticipantModal(id) {
-        const p = appData.participants.find((item) => item.id === id);
-        if (!p) return;
-
-        document.getElementById("participant-modal-title").innerText = "Edit Anggota Patungan Sapi";
-        document.getElementById("participant-id").value = p.id;
-        document.getElementById("participant-name").value = p.name;
-        document.getElementById("participant-paid").value = p.paid;
-        document.getElementById("participant-target").value = p.target;
-        document.getElementById("participant-note").value = p.note;
-
-        const modal = document.getElementById("participant-modal");
-        const box = document.getElementById("participant-modal-box");
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-        setTimeout(() => {
-          box.classList.remove("scale-95", "opacity-0");
-          box.classList.add("scale-100", "opacity-100");
-        }, 10);
-      }
-
-      function closeParticipantModal() {
-        const modal = document.getElementById("participant-modal");
-        const box = document.getElementById("participant-modal-box");
-        box.classList.remove("scale-100", "opacity-100");
-        box.classList.add("scale-95", "opacity-0");
-        setTimeout(() => {
-          modal.classList.remove("flex");
-          modal.classList.add("hidden");
-        }, 200);
-      }
-
-      function handleSaveParticipant(e) {
-        e.preventDefault();
-        const id = document.getElementById("participant-id").value;
-        const name = document.getElementById("participant-name").value.trim();
-        const paid = parseInt(document.getElementById("participant-paid").value) || 0;
-        const target = parseInt(document.getElementById("participant-target").value) || 3000000;
-        const note = document.getElementById("participant-note").value.trim();
-
-        if (!name) {
-          showToast("Nama peserta wajib diisi.", "error");
-          return;
-        }
-
-        if (id) {
-          const p = appData.participants.find((item) => item.id === id);
-          if (p) {
-            p.name = name;
-            p.paid = paid;
-            p.target = target;
-            p.note = note;
-          }
-          showToast("Data anggota patungan diperbarui!");
-        } else {
-          if (appData.participants.length >= 7) {
-            showToast("Slot maksimal 7 orang.", "error");
-            return;
-          }
-          const newP = {
-            id: "p-" + Date.now(),
-            name,
-            paid,
-            target,
-            note: note || "Anggota Patungan",
-          };
-          appData.participants.push(newP);
-          showToast("Anggota patungan berhasil ditambahkan!");
-        }
-
-        saveToLocalStorage();
-        closeParticipantModal();
-        renderParticipants();
-      }
-
-      function deleteParticipant(id) {
-        showConfirm("Hapus Anggota", "Apakah Anda yakin ingin menghapus peserta ini dari kelompok patungan?", () => {
-          appData.participants = appData.participants.filter((p) => p.id !== id);
-          saveToLocalStorage();
-          renderParticipants();
-          showToast("Anggota patungan dihapus.");
+      function confirmResetPatungan() {
+        showConfirmModal({
+          title: "Reset Grup Patungan",
+          message: "Kembalikan 7 slot peserta patungan ke status default?",
+          okText: "Reset Grup",
+          onConfirm: () => {
+            const sharePrice = appState.animals.find((a) => a.id === "sapi-1-7")?.targetPrice || 3000000;
+            appState.patungan = createDefaultPatungan(sharePrice);
+            saveState();
+            renderPatungan();
+            showToast("Grup patungan direset.", "info");
+          },
         });
       }
 
       function exportReport() {
-        window.print();
+        showToast("Mempersiapkan laporan cetak...", "info");
+        setTimeout(() => { window.print(); }, 300);
       }
 
       function confirmResetDemo() {
-        showConfirm("Reset Data Demo", "Semua data setoran dan peserta akan dikembalikan ke pengaturan awal demo. Lanjutkan?", () => {
-          localStorage.removeItem("qurbanku_data_v4");
-          location.reload();
+        showConfirmModal({
+          title: "Reset Data Demo",
+          message: "Seluruh data setoran dan target Anda akan dikembalikan ke data sampel awal. Lanjutkan?",
+          okText: "Reset Demo",
+          onConfirm: () => {
+            appState = createDemoState();
+            saveState();
+            renderAll();
+            updateCountdown();
+            showToast("Aplikasi dikembalikan ke data demo.", "success");
+          },
         });
       }
+
+      function renderAll() {
+        renderHeroAndSummary();
+        renderAnimalCards();
+        renderCalculator();
+        renderDeposits();
+        renderPatungan();
+        renderChart();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("deposit-date");
+        if (dateInput && !dateInput.value) {
+          dateInput.value = new Date().toISOString().split("T")[0];
+        }
+
+        renderAll();
+        updateCountdown();
+
+        if (countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(updateCountdown, 1000);
+      });
     </script>
   </body>
 </html>
